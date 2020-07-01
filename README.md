@@ -7,5 +7,6 @@ Python script to maintain a clean Pegasus-frontend directory
 
 
 ## to do :
+- add assets path in metadata
 - edit metadata for 2CD+ games
 - edit possible media folders (see Pegasus)
