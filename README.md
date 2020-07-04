@@ -13,6 +13,7 @@ Bellerophon is a Python script to :
 
 ## Requirements
 Python >= 3.6
+
 toml >= 0.10.1
 
 You can type : `pip install requirements.txt`
