@@ -384,7 +384,7 @@ def main():
 if __name__ == "__main__":
     begin_message = '''
   ≠------------------------------------------------≠
-  ¦    * . BELLOREPHON * . *                       ¦
+  ¦    * . BELLEROPHON * . *                       ¦
   ¦                                                ¦
   ¦              - a Pegasus-frontend companion    ¦
   ≠------------------------------------------------≠
