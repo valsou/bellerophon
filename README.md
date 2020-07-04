@@ -11,6 +11,9 @@ Bellerophon is a Python script to :
 - automatically generate metadata.txt files
 - move to a backup folder all leftover assets
 
+![](images/ngp_folder.jpg)
+![](images/ngp_metadata.jpg)
+
 ## Requirements
 Python >= 3.6
 
