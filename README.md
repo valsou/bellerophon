@@ -79,12 +79,6 @@ NVIDIA_SHIELD/
     path = "/storage/A4D2-1800/NVIDIA_SHIELD/"
 
 [systems]
-    # ((( Collection using Retroarch cores )))
-    # [systems.NAME_OF_DIRECTORY]
-    # shortname: "SHORTNAME"
-    # collection = "NAME_OF_COLLECTION"
-    # extension = "EXT1,EXT2,EXT3"
-    # core = "RETROARCH_CORE.so"
 
     # Example
     [systems.arcade]
@@ -92,13 +86,6 @@ NVIDIA_SHIELD/
     collection = "Arcade"
     extension = "chd,zip"
     core = "fbneo_libretro_android.so"
-
-    # ((( Collection using stand-alone emulator )))
-    # [systems.NAME_OF_DIRECTORY]
-    # shortname: "SHORTNAME"
-    # collection = "NAME_OF_COLLECTION"
-    # extension = "EXT1,EXT2,EXT3"
-    # launch = "COMMAND"
 
     # Example 2 : collection using stand-alone application
     [systems.sega_dreamcast]
