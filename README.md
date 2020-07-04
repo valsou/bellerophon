@@ -18,6 +18,8 @@ toml >= 0.10.1
 
 You can type : `pip install requirements.txt`
 
+In order to work the script also needs :
+
 - one `gamelist.xml` file in each system folder
 - assets folder named `media` in each system foler
 
