@@ -396,7 +396,7 @@ if __name__ == "__main__":
         pass
     finish = datetime.now()
     end_message = f'''
-  [ Bellorephon took {round((finish-start).total_seconds(),2)} s ]
+  [ Bellerophon took {round((finish-start).total_seconds(),2)} s ]
 
   Hope the script was helpful. •ᴗ•
     '''
