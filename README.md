@@ -84,6 +84,7 @@ NVIDIA_SHIELD/
 [systems]
 
     # Example
+    # [systems.DIRECTORY_NAME]
     [systems.arcade]
     shortname = "arcade"
     collection = "Arcade"
@@ -97,6 +98,8 @@ NVIDIA_SHIELD/
     extension = "chd,iso"
     launch = "am start\n  --user 0\n  -a android.intent.action.VIEW\n  -n io.recompiled.redream/.MainActivity\n  -d 'file://{file.path}'"
 ```
+
+**Only `LIBRETRO` (equals to system `core`) and `SDCARD` (equals to a mix of global `path` and system directory name) launch parameters can be override for now.**
     
 4. On Desktop double-clic `bellerophon.py`.
 On CLI type `py bellerophon.py`.
