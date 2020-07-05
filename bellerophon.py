@@ -27,14 +27,19 @@ MEDIA_EXT = [
     'jpg',
     'jpeg',
     'png',
-    'mp4'
+    'mp4',
+    'webm',
+    'mp4',
+    'avi',
+    'mp3',
+    'ogg',
+    'wav'
 ]
 
 
 def init_config(configuration_path):
     systems = {}
     config_file = toml.load(configuration_path)
-    global_path = config_file['global']['path']
     systems_unavailable = []
     systems_available = {}
 
@@ -54,13 +59,9 @@ def init_config(configuration_path):
                 launch = config_file['systems'][folder]['launch']
             else:
                 core = config_file['systems'][folder]['core']
-                concat_launch = config_file['global']['launch'].replace(
-                    "<PATH_VARIABLE>",
-                    global_path)
-                launch = (
-                    f'''{concat_launch}
-  -e LIBRETRO /data/data/com.retroarch/cores/{core}
-  -e SDCARD {global_path}/{folder}''')
+                launch = config_file['global']['launch'].replace(
+                        "<CORE_VARIABLE>", core).replace(
+                            "<SYSTEM_VARIABLE>", folder)
 
             item = {
                 folder: {
@@ -373,8 +374,8 @@ def main():
         print("[ Done ]")
     except FileNotFoundError:
         raise ValueError("[ File Not Found ]")
-    except Exception:
-        raise ValueError("[ Unknown Error ]")
+    except Exception as err:
+        raise ValueError(err)
 
     print(flush=True)
 
