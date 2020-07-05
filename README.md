@@ -4,6 +4,9 @@
 The idea is : **multiple** folders full of games, **multiple** gamelist.xml (EmulationStation) files, **1** configuration file to determine global/per system preferences.
 And one Bellerophon to kick the ass of the chimera.
 
+> For now i test and develop the script for my own use-case, e.g : Pegasus-frontend + Shield TV (Android), one `collection` (system) per metadata.txt
+If you want it to work for your need, or simply work (because there is a bug that i have not seen), do not hesitate to let me know. Thank you. :)
+
 ## Changelog
 
 - version 0.16 (06/07/2020) :
@@ -35,6 +38,7 @@ Bellerophon is a Python script to :
 - be compatible with other folder structures (another name than `media`, names of games as folders names, etc.)
 - a GUI/CLI to choose what to do (e.g. just clean the media, just generate metadata files)
 - takeback a backed up asset if the game file is back in the folder
+- be compatible with « one metadata.txt multiple collections »
 
 ## Requirements
 Python >= 3.6
@@ -113,10 +117,3 @@ The config file consists of a global variable (for now juste the Retroarch comma
 |extension | string | *A comma-separated list of file extensions (without the . dot), or a list of such lines. All files with these extensions will be included.* (official  documentation) Will be a list in the future. |
 |core *optional* | string | Libretro core name with *.so* extension. It will be concatenated in each metadata files. |
 |launch *optional* | string | A launch command that will override the default one. So the core variable will not be used. |
-
-
-
-
-## Disclaimer
-The script has been made for my use case but i tried to develop it with other needs in mind.
-I personnaly don't use custom collections (e.g. "Platform games", "Best games for kids", etc.) so it may not work in thoses cases.
