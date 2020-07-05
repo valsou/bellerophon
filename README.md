@@ -81,6 +81,7 @@ NVIDIA_SHIELD/
 3. Edit `bellerophon.conf` according to your needs.
 
 Add all your systems configurations. The script will skip configuration of a non existing folder/system.
+
 4. On Desktop double-clic `bellerophon.py`.
 On CLI type `py bellerophon.py`.
 
