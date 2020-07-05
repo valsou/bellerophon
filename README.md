@@ -1,6 +1,9 @@
 # bellerophon
           - a Pegasus-frontend companion
 
+The idea is : **multiple** folders full of games, **multiple** gamelist.xml (EmulationStation) files, **1** configuration file to determine global/per system preferences.
+And one Bellerophon to kick the ass of the chimera.
+
 ## Changelog
 
 - version 0.16 (06/07/2020) :
@@ -24,6 +27,11 @@ Pegasus is a front-end to navigate in your games library. It relies on metadata.
 Bellerophon is a Python script to :
 - generate metadata files
 - clean media library (unused assets)
+
+## Improvements and ideas
+- scrape directly via Bellerophon ? (maybe not...)
+- permit to take as *database* something else than gamelist.xml (EmulationStation) files
+- improve the .conf file to be compatible with all features proposed by Pegasus frontend (ignore files, regexes, sorting...)
 
 ## Requirements
 Python >= 3.6
