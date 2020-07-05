@@ -50,6 +50,11 @@ If `gamelist.xml` is not found, the `metadata.txt` won't be created.
 ### Nothing is removed.
 
 ## Usage
+### Gamelist.xml
+Scrape your games with Skraper (or another scraper that output an EmulationStation gamelist.xml [not tested]).
+Ask for the right media folders names (they will be used as is).
+
+### Bellerophon
 1. Download `bellerophon.py` and `bellerophon.sample.conf` at the root of your library. Below the tree of my own library :
 
 ```   
@@ -74,6 +79,8 @@ NVIDIA_SHIELD/
 
 2. Rename `bellerophon.sample.conf` to `bellerophon.conf`
 3. Edit `bellerophon.conf` according to your needs.
+
+Add all your systems configurations. The script will skip configuration of a non existing folder/system.
 4. On Desktop double-clic `bellerophon.py`.
 On CLI type `py bellerophon.py`.
 
