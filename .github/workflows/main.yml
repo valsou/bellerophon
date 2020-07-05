@@ -1,0 +1,117 @@
+- name: Generate changelog
+  uses: heinrichreimer/action-github-changelog-generator@v2.1.1
+  with:
+    # Target GitHub repo in the form of organization/repository.
+    repo: # optional
+    # Username of the owner of target GitHub repo.
+    user: # optional
+    # Name of project on GitHub.
+    project: # optional
+    # To make more than 50 requests per hour your GitHub token is required.
+    token: # optional
+    # Date format.
+    dateFormat: # optional
+    # Output file.
+    output: # optional
+    # Optional base file to append generated changes to.
+    base: # optional
+    # Set up custom header label.
+    headerLabel: # optional
+    # Define your own set of sections which overrides all default sections.
+    configureSections: # optional
+    # Add new sections but keep the default sections.
+    addSections: # optional
+    # Add YAML front matter. Formatted as JSON because it's easier to add on the command line.
+    frontMatter: # optional
+    # Include closed issues in changelog.
+    issues: # optional
+    # Include closed issues without labels in changelog.
+    issuesWoLabels: # optional
+    # Include pull-requests in changelog.
+    pullRequests: # optional
+    # Include pull requests without labels in changelog.
+    prWoLabels: # optional
+    # Use milestone to detect when issue was resolved.
+    filterByMilestone: # optional
+    # Add author of pull request at the end.
+    author: # optional
+    # Use GitHub tags instead of Markdown links for the author of an issue or pull-request.
+    usernamesAsGithubLogins: # optional
+    # Generate log from unreleased closed issues only.
+    unreleasedOnly: # optional
+    # Add to log unreleased closed issues.
+    unreleased: # optional
+    # Include compare link (Full Changelog) between older version and newer version.
+    unreleasedLabel: # optional
+    # Of the labeled issues, only include the ones with the specified labels.
+    includeLabels: # optional
+    # Issues with the specified labels will be excluded from changelog.
+    excludeLabels: # optional
+    # The specified labels will be shown in brackets next to each matching issue. Use "ALL" to show all labels.
+    issueLineLabels: # optional
+    # Changelog will exclude specified tags.
+    excludeTags: # optional
+    # Apply a regular expression on tag names so that they can be excluded.
+    excludeTagsRegex: # optional
+    # Changelog will start after specified tag.
+    sinceTag: # optional
+    # Changelog will end before specified tag.
+    dueTag: # optional
+    # Maximum number of issues to fetch from GitHub.
+    maxIssues: # optional
+    # The URL to point to for release links, in printf format (with the tag as variable).
+    releaseUrl: # optional
+    # The Enterprise GitHub site where your project is hosted.
+    githubSite: # optional
+    # The enterprise endpoint to use for your GitHub API.
+    githubApi: # optional
+    # Create a simple list from issues and pull requests.
+    simpleList: # optional
+    # Put the unreleased changes in the specified release number.
+    futureRelease: # optional
+    # Limit pull requests to the release branch, such as master or release.
+    releaseBranch: # optional
+    # Use HTTP Cache to cache GitHub API requests (useful for large repos).
+    httpCache: # optional
+    # Filename to use for cache.
+    cacheFile: # optional
+    # Filename to use for cache log.
+    cacheLog: # optional
+    # Path to cacert.pem file.
+    sslCaFile: # optional
+    # Run verbosely.
+    verbose: # optional
+    # Set up custom label for breaking changes section.
+    breakingLabel: # optional
+    # Issues with these labels will be added to a new section, called "Breaking changes".
+    breakingLabels: # optional
+    # Set up custom label for enhancements section.
+    enhancementLabel: # optional
+    # Issues with the specified labels will be added to "Implemented enhancements" section.
+    enhancementLabels: # optional
+    # Set up custom label for bug-fixes section.
+    bugsLabel: # optional
+    # Issues with the specified labels will be added to "Fixed bugs" section.
+    bugLabels: # optional
+    # Set up custom label for deprecated section.
+    deprecatedLabel: # optional
+    # Issues with the specified labels will be added to a section called "Deprecated".
+    deprecatedLabels: # optional
+    # Set up custom label for removed section.
+    removedLabel: # optional
+    # Issues with the specified labels will be added to a section called "Removed".
+    removedLabels: # optional
+    # Set up custom label for security section.
+    securityLabel: # optional
+    # Issues with the specified labels will be added to a section called "Security fixes".
+    securityLabels: # optional
+    # Set up custom label for closed-issues section.
+    issuesLabel: # optional
+    # Set up custom label for pull requests section.
+    prLabel: # optional
+    # Changelog will only show last tag.
+    onlyLastTag: # optional
+    # Strip headers.
+    stripHeaders: # optional
+    # Strip generator reference.
+    stripGeneratorNotice: # optional
