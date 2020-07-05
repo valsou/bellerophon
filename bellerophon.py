@@ -1,18 +1,28 @@
+#!/usr/bin/env python
+"""Bellerophon is a companion for Pegasus-frontend application.
+
+Bellerophon generate metadata.txt files accordingly to games
+and gamelist.xml files. It also backup any asset that is not used.
+"""
+
 from datetime import datetime
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import toml
-from glob import glob
-from sys import stdout
-import os
+
 
 start = datetime.now()
 
-#--- BELLEROPHON ---#
-#--- version 0.1 ---#
+# BELLEROPHON
+# version 0.1
 
-#--- constants ---#
+# Constants
 BASE_PATH = Path.cwd()
+CONFIG_PATH = BASE_PATH / 'bellerophon.conf'
+BASE_FOLDERS = [
+        x.name for x
+        in BASE_PATH.iterdir()
+        if x.is_dir()]
 MEDIA_EXT = [
     'jpg',
     'jpeg',
@@ -20,31 +30,37 @@ MEDIA_EXT = [
     'mp4'
 ]
 
-def initConfig(config_file):
-    systems_in_config = config_file['systems'].keys()
-    global_launch = str(config_file['global']['launch'])
-    global_path = str(config_file['global']['path'])
-    
+
+def init_config(configuration_path):
+    systems = {}
+    config_file = toml.load(configuration_path)
+    global_path = config_file['global']['path']
     systems_unavailable = []
     systems_available = {}
-    systems = {}
 
-    #::: Folders in BASE_PATH
-    all_folders = [x.name for x in BASE_PATH.iterdir() if x.is_dir()]
-    
-    for folder in systems_in_config:
-        if folder in all_folders:
-            #... Retrieve items
-            shortname = str(config_file['systems'][folder]['shortname'])
-            collection = str(config_file['systems'][folder]['collection'])
-            extension = [x.strip() for x in str(config_file['systems'][folder]['extension']).split(',')]
+    for folder in config_file['systems'].keys():
+
+        if folder in BASE_FOLDERS:
+            # Retrieve items
+            shortname = config_file['systems'][folder]['shortname']
+            collection = config_file['systems'][folder]['collection']
+            dict_extension = config_file['systems'][folder]['extension']
+
+            extension = [
+                x.strip() for x
+                in dict_extension.split(',')]
+
             if "launch" in config_file['systems'][folder]:
-                launch = str(config_file['systems'][folder]['launch'])         
+                launch = config_file['systems'][folder]['launch']
             else:
-                core = str(config_file['systems'][folder]['core'])
-                launch = (  f"{global_launch}\n"
-                            f"  -e LIBRETRO /data/data/com.retroarch/cores/{core}\n"
-                            f"  -e SDCARD {global_path}{folder}" )
+                core = config_file['systems'][folder]['core']
+                concat_launch = config_file['global']['launch'].replace(
+                    "<PATH_VARIABLE>",
+                    global_path)
+                launch = (
+                    f'''{concat_launch}
+  -e LIBRETRO /data/data/com.retroarch/cores/{core}
+  -e SDCARD {global_path}/{folder}''')
 
             item = {
                 folder: {
@@ -54,351 +70,387 @@ def initConfig(config_file):
                     "launch": launch
                 }
             }
-            #.....
 
-            #... Availables games
-            systems_available.update( item )
-            #.....
+            # Availables games
+            systems_available.update(item)
 
-        else:
-            #... Unavailables games
-            systems_unavailable.append(folder)
-            #.....
+        systems_unavailable.append(folder)
 
-
-    systems.update( {
-        "global": {
-            "launch": global_launch,
-            "path": global_path
-        },
+    systems.update({
         "systems": {
             "available": systems_available,
             "unavailable": systems_unavailable
-        } 
-    } )
+        }
+    })
 
     return systems
 
-def parseGamelist(file):
-    tree = ET.parse(file)
-    root = tree.getroot()
-    games_dict = {}
-    last_game = [ 0, ""]
-    path_increment = ""
 
-    def instanceNode(node, extra=None):
-        if node is not None and node.text != None:
+def parse_gamelist(file):
+
+    def instance_node(node, extra=None):
+        if node is not None and node.text is not None:
+
             if not extra:
                 return node.text
-            elif extra == "release":
-                return datetime.strptime(node.text, '%Y%m%dT%H%M%S').strftime('%Y-%m-%d')
-            elif extra == "players":
+
+            if extra == "release":
+                release = datetime.strptime(node.text, '%Y%m%dT%H%M%S')
+                return release.strftime('%Y-%m-%d')
+
+            if extra == "players":
                 number = str(node.text).split('-')
                 players = '1'
-                if (len(number) > 1):
+                if len(number) > 1:
                     players = number[1]
                 return players
-            elif extra == "rating":
+
+            if extra == "rating":
                 percentage = float(node.text) * 100
                 rating = str(int(percentage)) + '%'
                 return rating
-        else:
-            return None
+
+        return None
+
+    tree = ET.parse(file)
+    root = tree.getroot()
+    games_dict = {}
+    last_game = [0, ""]
 
     for game in root.findall('game'):
-
-        gamename = instanceNode(game.find('name'))
-        gamepath = instanceNode(game.find('path'))
-        gamepath_wext = Path(gamepath).name[:-len(Path(gamepath).suffix)]
-        developer = instanceNode(game.find('developer'))     
-        publisher = instanceNode(game.find('publisher'))
-        genre = instanceNode(game.find('genre'))
-        description = instanceNode(game.find('desc'))
-        release = instanceNode(game.find('releasedate'), "release")
-        players = instanceNode(game.find('players'), "players")
-        rating = instanceNode(game.find('rating'), "rating")
 
         if 'id' in game.attrib:
             gameid = int(game.attrib['id'])
         else:
             gameid = 0
 
+        gamepath = instance_node(game.find('path'))
+        gamename = Path(gamepath).name[:-len(Path(gamepath).suffix)]
+        gamepath_wext = Path(gamepath).name[:-len(Path(gamepath).suffix)]
+
         if gameid != 0 and gameid == last_game[0] and bool(games_dict):
             path = games_dict[last_game[1]]["file"]
             gamepath = path + f"\n  {gamepath}"
             del games_dict[last_game[1]]
 
-        games_dict.update( {
-            Path(gamepath).name[:-len(Path(gamepath).suffix)]: {
-                "game": gamename,
+        games_dict.update({
+            gamename: {
+                "game": instance_node(game.find('name')),
                 "file": gamepath,
-                "developer": developer,
-                "publisher": publisher,
-                "genre": genre,
-                "description": description,
-                "release": release,
-                "players": players,
-                "rating": rating
+                "developer": instance_node(game.find('developer')),
+                "publisher": instance_node(game.find('publisher')),
+                "genre": instance_node(game.find('genre')),
+                "description": instance_node(game.find('desc')),
+                "release": instance_node(game.find('releasedate'), "release"),
+                "players": instance_node(game.find('players'), "players"),
+                "rating": instance_node(game.find('rating'), "rating")
             }
-        } )
+        })
 
-        last_game = [ gameid,gamepath_wext ]
-    
+        last_game = [gameid, gamepath_wext]
+
     return games_dict
 
-def generateData(systems, games_in_folders):
+
+def generate_data(systems):
     data = {}
+
     for system in systems.keys():
-        gamelist_path = BASE_PATH / system / 'gamelist.xml'
-        # metadata_path = BASE_PATH / system / 'metadata.txt'
+
+        gamelist_path = BASE_PATH/system/'gamelist.xml'
+
         if gamelist_path.is_file():
-            stdout.write(f"  . . > Parsing {gamelist_path.parent.name}/gamelist.xml...")
-            try:
-                data.update( {
-                    gamelist_path.parent.name: parseGamelist(gamelist_path)
-                } )
-                stdout.write("     [ Done ]")
-            except Exception:
-                stdout.write("     [ Error ]")
-            finally:
-                stdout.write("\n")
-                stdout.flush()
+
+            if not data:
+                print("")
+
+            parent_folder = gamelist_path.parent.name
+            print(
+                f"  . . > Parsing {parent_folder}/gamelist.xml...",
+                end="     ")
+
+            data.update({
+                gamelist_path.parent.name: parse_gamelist(gamelist_path)})
+            print("[ Done ]")
+
         else:
-            stdout.write(f"  . . > Parsing {gamelist_path.parent.name}/gamelist.xml...     [ Not found ]\n")
-            stdout.flush()
+            parent_folder = gamelist_path.parent.name
+            print(
+                f"  . . > Parsing {parent_folder}/gamelist.xml...",
+                end="     ")
+            print("[ Not found ]")
+
+    if not data:
+        raise ValueError("[ No System Found ]")
 
     return data
 
-def getGames(systems):
+
+def get_games(systems):
     games_in_folders = {}
     all_folders = [x.name for x in BASE_PATH.iterdir() if x.is_dir()]
     systems_in_config = systems.keys()
 
     for folder in systems_in_config:
+
         if folder in all_folders:
-            current_path = BASE_PATH / folder
-            games_suffix = [x for x in systems[folder]['extension']]  
-            games = [str(x.name)[:-len(x.suffix)] for x in current_path.iterdir() if x.is_file() and str(x.suffix)[1:] in games_suffix]  
-            games_in_folders.update( {
+            current_path = BASE_PATH/folder
+            games_suffix = systems[folder]['extension']
+            games = [
+                str(x.name)[:-len(x.suffix)] for x
+                in current_path.iterdir()
+                if x.is_file() and str(x.suffix)[1:] in games_suffix]
+            games_in_folders.update({
                 str(folder): games
-            } )
+            })
 
     return games_in_folders
 
-def sortMedia(media):
+
+def sort_media(media):
     sorted_media = {}
+
     for key, value in sorted(media.items()):
         sorted_media.setdefault(value, []).append(key)
+
     return sorted_media
 
-def getMedia(systems):
+
+def get_media(systems):
     media_in_folders = {}
     systems_in_config = systems.keys()
 
     for system in systems_in_config:
-        media_path = Path(BASE_PATH / system / 'media')
-        media = {x:str(x.name)[:-len(x.suffix)] for x in media_path.rglob('*') if x.suffix[1:] in MEDIA_EXT}
-        sorted_media = sortMedia(media)
-        media_in_folders.update( {
+        media_path = Path(BASE_PATH/system/'media')
+        media = {
+            x: str(x.name)[:-len(x.suffix)] for x
+            in media_path.rglob('*')
+            if x.suffix[1:] in MEDIA_EXT}
+        sorted_media = sort_media(media)
+        media_in_folders.update({
             system: sorted_media
-        } )
-    
+        })
+
     return media_in_folders
 
-def createMetadata(data, games, media, parameters):
+
+def create_metadata(data, games, media, parameters):
+
+    def append_or_not(label, line):
+        if line is not None:
+            return f'{label}: {line}\n'
+        return ""
+
     for system in data.keys():
-        output = ""
-        try:
-            stdout.write(f"  . . > Creating {system}/metadata.txt...")
-            games_dict = []
+        print(
+            f"  . . > Creating {system}/metadata.txt...",
+            end="     ")
 
-            for k, v in parameters[system].items():
-                if type(v) == list:
-                    v = ','.join(v)
-                games_dict.append(f"{k}: {v}\n")
-            
-            games_dict.append("\n")
+        file = open(
+            BASE_PATH/system/'metadata.txt',
+            'w+',
+            encoding='utf-8')
 
-            for game in games[system]:
+        # Generate system header
+        for key, value in parameters[system].items():
 
-                if game in data[system].keys():
+            if isinstance(value, list):
+                value = ','.join(value)
 
-                    if data[system][game]['game'] != None:
-                        games_dict.append(f"game: {data[system][game]['game']}\n")        
+            file.write(f"{key}: {value}\n")
 
-                    if data[system][game]['file'] != None:
-                        games_dict.append(f"file: {data[system][game]['file']}\n")
-                    
-                    if data[system][game]['developer'] != None:
-                        games_dict.append(f"developer: {data[system][game]['developer']}\n")
-                            
-                    if data[system][game]['publisher'] != None:
-                        games_dict.append(f"publisher: {data[system][game]['publisher']}\n")
+        file.write("\n")
 
-                    if data[system][game]['genre'] != None:
-                        games_dict.append(f"genre: {data[system][game]['genre']}\n")
+        for game in games[system]:
 
-                    if data[system][game]['description'] != None:
-                        games_dict.append(f"description: {data[system][game]['description']}\n")
-                    
-                    if data[system][game]['release'] != None:
-                        games_dict.append(f"release: {data[system][game]['release']}\n")
+            if game in data[system].keys():
 
-                    if data[system][game]['players'] != None:
-                        games_dict.append(f"players: {data[system][game]['players']}\n")
+                file.write(
+                    append_or_not(
+                        "game",
+                        data[system][game]['game']))
 
-                    if data[system][game]['rating'] != None:
-                        games_dict.append(f"rating: {data[system][game]['rating']}\n")
+                file.write(
+                    append_or_not(
+                        "file",
+                        data[system][game]['file']))
 
-                    # if 'id' in game.attrib:
-                    #     games_dict.append(f"x-id: {game.attrib['id']}\n")
+                file.write(
+                    append_or_not(
+                        "developer",
+                        data[system][game]['developer']))
 
-                    # if 'source' in game.attrib:
-                    #     games_dict.append(f"x-source: {game.attrib['source']}\n")
+                file.write(
+                    append_or_not(
+                        "publisher",
+                        data[system][game]['publisher']))
 
-                    #... Retrieve assets
-                    if game in media[system]:
-                        for item in media[system][game]:
-                            asset_code = item.parent.name
-                            asset_path = f"./media/{asset_code}/{item.name}"
-                            games_dict.append(f"assets.{asset_code}: {asset_path}\n")
-                    #...............
+                file.write(
+                    append_or_not(
+                        "genre",
+                        data[system][game]['genre']))
 
-                    games_dict.append("\n")
+                file.write(
+                    append_or_not(
+                        "description",
+                        data[system][game]['description']))
 
-            for line in games_dict:
-                output += line
+                file.write(
+                    append_or_not(
+                        "release",
+                        data[system][game]['release']))
 
-            f = open(BASE_PATH / system / 'metadata.txt', 'w+', encoding='utf-8')
-            f.write(output)
-            f.close()
+                file.write(
+                    append_or_not(
+                        "players",
+                        data[system][game]['players']))
 
-            stdout.write("     [ Done ]")
+                file.write(
+                    append_or_not(
+                        "rating",
+                        data[system][game]['rating']))
 
-        except Exception:
-            stdout.write("     [ Error ]")
-        finally:
-            stdout.write("\n")
-            stdout.flush()
+                # Retrieve assets
+                if game in media[system]:
 
-def backupMedia(games, media):
+                    for item in media[system][game]:
+                        asset_code = item.parent.name
+                        asset_path = f"./media/{asset_code}/{item.name}"
+                        asset = f"assets.{asset_code}: {asset_path}\n"
+                        file.write(asset)
+
+                file.write("\n")
+
+        print("[ Done ]")
+
+        file.close()
+
+
+def backup_media(games, media):
     backed_up = False
+
     for system in games.keys():
-        try:
-            for k,v in media[system].items():
-                if k not in games[system]:
 
-                    backup_dir = BASE_PATH / system / 'media.backup'
+        for key, value in media[system].items():
 
-                    if backup_dir.is_dir() is False:
-                        Path.mkdir(backup_dir)
+            if key not in games[system]:
+                backup_dir = BASE_PATH / system / 'media.backup'
 
-                    for item in v:
-                        asset_dir = BASE_PATH / system / 'media.backup' / item.parent.name
+                if backup_dir.is_dir() is False:
+                    Path.mkdir(backup_dir)
 
-                        if asset_dir.is_dir() is False:
-                            Path.mkdir(asset_dir)
-                        
-                        to_backup = BASE_PATH / system / 'media.backup' / item.parent.name / item.name
+                for item in value:
+                    parent_name = item.parent.name
+                    item_name = item.name
+                    asset_dir = BASE_PATH/system/'media.backup'/parent_name
+
+                    if asset_dir.is_dir() is False:
+                        Path.mkdir(asset_dir)
+
+                    source_backup = parent_name/item_name
+                    to_backup = asset_dir/item_name
+
+                    try:
                         item.rename(to_backup)
-
-                        stdout.write(f"\n  . . > {system}/{item.parent.name}/{item.name}...     [ Backed up ]\n")
+                        print(f"  . . > {source_backup}...", end="     ")
+                        print("[ Backed up ]")
                         backed_up = True
-
-        except Exception:
-            stdout.write("     [ Error ]")
-        finally:
-            stdout.flush()
+                    except Exception:
+                        print("[ Error ]")
 
     return backed_up
 
-def missingAssets():
-    pass
 
 def main():
-    #::: Configuration file
-    stdout.write("  > Checking configuration file...")
+    # Configuration file
     try:
-        config_path = BASE_PATH / 'bellerophon.conf'
-        configuration = initConfig(toml.load(config_path))
-        stdout.write("     [ Done ]")
+        print("  > Checking configuration file...", end="     ")
+        configuration = init_config(CONFIG_PATH)
+        print("[ Done ]")
+    except FileNotFoundError:
+        raise ValueError("[ File Not Found ]")
     except Exception:
-        stdout.write("     [ File does not exist ]")
-        raise Exception
-    finally:
-        stdout.write("\n\n")
-        stdout.flush()
-    #:::::
+        raise ValueError("[ Unknown Error ]")
 
-    #::: Getting games in each folder
-    stdout.write("  > Getting games in each folder...")
+    print(flush=True)
+
+    # Generate data
+
     try:
-        games = getGames(configuration['systems']['available'])
-        stdout.write("     [ Done ]")
+        print("  > Generating data...", end="     ")
+        data = generate_data(configuration['systems']['available'])
+    except ValueError as err:
+        raise ValueError(err)
     except Exception:
-        stdout.write("     [ Error ]")
-        raise Exception
-    finally:
-        stdout.write("\n\n")
-        stdout.flush()
-    #:::::
+        raise ValueError("[ Unknown Error ]")
 
-    #::: Generate data
-    stdout.write("  > Generating data...\n")
-    data = generateData(configuration['systems']['available'], games)
-    if not data:
-        return
-    stdout.write("\n")
-    stdout.flush()
-    #:::::
+    print(flush=True)
 
-    #::: Getting media in each folder
-    stdout.write("  > Getting media in each folder...")
+    # Getting games in each folder
     try:
-        media = getMedia(configuration['systems']['available'])
-        stdout.write("     [ Done ]")
+        print("  > Getting games in each folder...", end="     ")
+        games = get_games(configuration['systems']['available'])
+        print("[ Done ]")
     except Exception:
-        stdout.write("     [ Error ]")
-        raise Exception
-    finally:
-        stdout.write("\n\n")
-        stdout.flush()
-    #:::::
+        raise ValueError("[ Unknown Error ]")
 
-    #::: Create metadata files
-    stdout.write("  > Creating metadata files...\n")
-    createMetadata(data, games, media, configuration['systems']['available'])
-    stdout.write("\n")
-    stdout.flush()
-    #:::::
+    print(flush=True)
 
-    #::: Backup unused media files
-    stdout.write("  > Checking unused media files...")
-    backup = backupMedia(games, media)
-    if backup == False:
-        stdout.write("     [ All good ]")
-    stdout.write("\n")
-    stdout.flush()
-    #:::::
+    # Getting media in each folder
+    try:
+        print("  > Getting media in each folder...", end="     ")
+        media = get_media(configuration['systems']['available'])
+        print("[ Done ]")
+    except Exception:
+        raise ValueError("[ Unknown Error ]")
+
+    print(flush=True)
+
+    # Create metadata files
+    try:
+        print("  > Creating metadata files...")
+        create_metadata(
+            data,
+            games,
+            media,
+            configuration['systems']['available'])
+    except Exception as err:
+        raise ValueError(err)
+
+    print(flush=True)
+
+    # Backup unused media files
+    try:
+        print("  > Checking unused media files...", end="     ")
+        backup = backup_media(games, media)
+
+        if backup is False:
+            print("[ All good ]")
+
+    except Exception as err:
+        raise ValueError(err)
+
 
 if __name__ == "__main__":
-    begin_message = '''
+    BEGIN_MESSAGE = '''
   ≠------------------------------------------------≠
   ¦    * . BELLEROPHON * . *                       ¦
   ¦                                                ¦
   ¦              - a Pegasus-frontend companion    ¦
   ≠------------------------------------------------≠
   '''
-    print(begin_message)
+    print(BEGIN_MESSAGE)
+
     try:
         main()
-    except Exception:
-        pass
+    except ValueError as err:
+        print(err)
+
     finish = datetime.now()
-    end_message = f'''
+    END_MESSAGE = f'''
   [ Bellerophon took {round((finish-start).total_seconds(),2)} s ]
 
-  Hope the script was helpful. •ᴗ•
+  Hope the script was helpful. . * * . . . * . * * . .
     '''
-    print(end_message)
-    input("")  
+    print(END_MESSAGE)
+    input("")
