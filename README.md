@@ -3,6 +3,10 @@
 
 ## Changelog
 
+- version 0.16 (06/07/2020) :
+	+ no more <PATH_VARIABLE> in .conf
+	+ added <CORE_VARIABLE> and <SYSTEM_VARIABLE> instead.
+
 - version 0.15 (06/07/2020) :
 	+ Big refactoring to reach a Pylint note >9
 	+ Change of behavior for `path` parameter in `bellerophon.conf`. Please update your file accordingly.
