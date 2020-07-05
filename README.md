@@ -34,6 +34,7 @@ Bellerophon is a Python script to :
 - improve the .conf file to be compatible with all features proposed by Pegasus frontend (ignore files, regexes, sorting...)
 - be compatible with other folder structures (another name than `media`, names of games as folders names, etc.)
 - a GUI/CLI to choose what to do (e.g. just clean the media, just generate metadata files)
+- takeback a backed up asset if the game file is back in the folder
 
 ## Requirements
 Python >= 3.6
