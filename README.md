@@ -90,7 +90,7 @@ The config file consists of a global variable (for now juste the Retroarch comma
 |key|type|value|
 |---|---|---|
 |shortname | string | *An optional short name for the collection, often an abbreviation (like MAME, NES, etc.). Should be lowercase.* (official  documentation) |
-|collection | string | *Creates a new collection with the value as name (if it was not created yet). The properties after this line will modify this collection. **This is a required field.*** (official  documentation) |
+|collection | string | *Creates a new collection with the value as name. **This is a required field.*** (official  documentation) |
 |extension | string | *A comma-separated list of file extensions (without the . dot), or a list of such lines. All files with these extensions (including those in subdirectories) will be included.* (official  documentation) Will be a list in the future. |
 |core *optional* | string | Libretro core name with *.so* extension. It will be concatenated in each metadata files. |
 |launch *optional* | string | A launch command that will override the default one. So the core variable will not be used. |
