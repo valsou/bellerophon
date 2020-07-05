@@ -72,44 +72,7 @@ NVIDIA_SHIELD/
 ```
 
 2. Rename `bellerophon.sample.conf` to `bellerophon.conf`
-3. Edit `bellerophon.conf` according to your needs. Below the excerpt of the sample file :
-```
-[global]
-    # Launch command (Retroarch) by default for all systems
-    launch = """am start
-    --user 0
-    -n com.retroarch/.browser.retroactivity.RetroActivityFuture
-    -e ROM \"{file.path}\"
-    -e CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg
-    -e IME com.android.inputmethod.latin/.LatinIME
-    -e DATADIR /data/data/com.retroarch
-    -e APK /data/app/com.retroarch-1/base.apk
-    -e DOWNLOADS /storage/emulated/0/Download
-    -e SCREENSHOTS /storage/emulated/0/Pictures
-    -e EXTERNAL /storage/emulated/0/Android/data/com.retroarch/files
-    --activity-clear-top"""
-    # Base path of your games (needed for Retroarch launch command)
-    path = "/storage/A4D2-1800/NVIDIA_SHIELD/"
-
-[systems]
-
-    # Example
-    # [systems.DIRECTORY_NAME]
-    [systems.arcade]
-    shortname = "arcade"
-    collection = "Arcade"
-    extension = "chd,zip"
-    core = "fbneo_libretro_android.so"
-
-    # Example 2 : collection using stand-alone application
-    [systems.sega_dreamcast]
-    shortname = "dreamcast"
-    collection = "Dreamcast"
-    extension = "chd,iso"
-    launch = "am start\n  --user 0\n  -a android.intent.action.VIEW\n  -n io.recompiled.redream/.MainActivity\n  -d 'file://{file.path}'"
-```
-
-**Only `LIBRETRO` (equals to system `core`) and `SDCARD` (equals to a mix of global `path` and system directory name) launch parameters can be override for now.**
+3. Edit `bellerophon.conf` according to your needs.
     
 4. On Desktop double-clic `bellerophon.py`.
 On CLI type `py bellerophon.py`.
