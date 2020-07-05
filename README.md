@@ -22,11 +22,8 @@ Pegasus is a front-end to navigate in your games library. It relies on metadata.
 
 ## What does Bellerophon ?
 Bellerophon is a Python script to :
-- automatically generate metadata.txt files
-- move to a backup folder all leftover assets
-
-![](images/ngp_folder.jpg)
-![](images/ngp_metadata.jpg)
+- generate metadata files
+- clean media library (unused assets)
 
 ## Requirements
 Python >= 3.6
@@ -48,9 +45,9 @@ If `gamelist.xml` is not found, the `metadata.txt` won't be created.
 
 [ https://www.skraper.net ]
 
-## Please, backup your `metadata.txt` files before running the script.
-## The script overwrite all `metadata.txt` for systems listed in `bellerophon.conf` and move unused assets in `media.backup` folder if necessary.
-## Nothing is removed.
+### Please, backup your `metadata.txt` files before running the script.
+### The script overwrite all `metadata.txt` for systems listed in `bellerophon.conf` and move unused assets in `media.backup` folder if necessary.
+### Nothing is removed.
 
 ## Usage
 1. Download `bellerophon.py` and `bellerophon.sample.conf` at the root of your library. Below the tree of my own library :
@@ -77,9 +74,29 @@ NVIDIA_SHIELD/
 
 2. Rename `bellerophon.sample.conf` to `bellerophon.conf`
 3. Edit `bellerophon.conf` according to your needs.
-    
 4. On Desktop double-clic `bellerophon.py`.
 On CLI type `py bellerophon.py`.
+
+## bellerophon.conf
+The config file consists of a global variable (for now juste the Retroarch command), and systems variables.
+
+### global
+|key|type|value|
+|---|---|---|
+|launch | string | A multiline command for Retroarch (Android). Edit the command to your need for Windows/Unix OS.|
+
+### systems
+#### systems.<SYSTEM_DIRECTORY_NAME>
+|key|type|value|
+|---|---|---|
+|shortname | string | *An optional short name for the collection, often an abbreviation (like MAME, NES, etc.). Should be lowercase.* (official  documentation) |
+|collection | string | *Creates a new collection with the value as name (if it was not created yet). The properties after this line will modify this collection. **This is a required field.*** (official  documentation) |
+|extension | string | *A comma-separated list of file extensions (without the . dot), or a list of such lines. All files with these extensions (including those in subdirectories) will be included.* (official  documentation) Will be a list in the future. |
+|core *optional* | string | Libretro core name with *.so* extension. It will be concatenated in each metadata files. |
+|launch *optional* | string | A launch command that will override the default one. So the core variable will not be used. |
+
+
+
 
 ## Disclaimer
 The script has been made for my use case but i tried to develop it with other needs in mind.
