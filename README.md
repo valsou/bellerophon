@@ -1,4 +1,4 @@
-<img src="images/logo_bellerophon.svg" width="60%"/>
+<img src="images/logo_bellerophon.svg" width="60%" title="bellérophon, a pegasus-frontend companion/>
 
 The idea is : **multiple** folders full of games, **multiple** gamelist.xml (EmulationStation) files, **1** configuration file to determine global/per system preferences.
 And one Bellerophon to kick the ass of the chimera.
