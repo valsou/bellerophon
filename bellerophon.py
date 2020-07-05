@@ -154,15 +154,16 @@ def parse_gamelist(file):
 
 def generate_data(systems):
     data = {}
+    iter = 0
 
     for system in systems.keys():
 
-        gamelist_path = BASE_PATH/system/'gamelist.xml'
+        if iter == 0:
+            print("")
+
+        gamelist_path = BASE_PATH / system / 'gamelist.xml'
 
         if gamelist_path.is_file():
-
-            if not data:
-                print("")
 
             parent_folder = gamelist_path.parent.name
             print(
@@ -179,6 +180,8 @@ def generate_data(systems):
                 f"  . . > Parsing {parent_folder}/gamelist.xml...",
                 end="     ")
             print("[ Not found ]")
+
+        iter += 1
 
     if not data:
         raise ValueError("[ No System Found ]")
@@ -327,6 +330,7 @@ def create_metadata(data, games, media, parameters):
 
 
 def backup_media(games, media):
+
     backed_up = False
 
     for system in games.keys():
@@ -342,17 +346,17 @@ def backup_media(games, media):
                 for item in value:
                     parent_name = item.parent.name
                     item_name = item.name
-                    asset_dir = BASE_PATH/system/'media.backup'/parent_name
+                    asset_dir = backup_dir / parent_name
 
                     if asset_dir.is_dir() is False:
                         Path.mkdir(asset_dir)
 
-                    source_backup = parent_name/item_name
+                    source_backup = f"{parent_name}/{item_name}"
                     to_backup = asset_dir/item_name
 
                     try:
-                        item.rename(to_backup)
                         print(f"  . . > {source_backup}...", end="     ")
+                        item.rename(to_backup)
                         print("[ Backed up ]")
                         backed_up = True
                     except Exception:
