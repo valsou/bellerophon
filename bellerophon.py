@@ -332,7 +332,7 @@ def create_metadata(data, games, media, parameters):
 
 def backup_media(games, media):
 
-    backed_up = False
+    backed_up = 0
 
     for system in games.keys():
 
@@ -356,14 +356,16 @@ def backup_media(games, media):
                     to_backup = asset_dir/item_name
 
                     try:
-                        print(f"  . . > {source_backup}...", end="     ")
                         item.rename(to_backup)
-                        print("[ Backed up ]")
-                        backed_up = True
+                        backed_up += 1
                     except Exception:
+                        print(f"  . . > {source_backup}...", end="     ")
                         print("[ Error ]")
-
-    return backed_up
+    
+    if backed_up > 0:
+        return f"[ {backed_up} assets backed up ]"
+    else:
+        return "[ Nothing to back up ]" 
 
 
 def main():
@@ -428,9 +430,7 @@ def main():
     try:
         print("  > Checking unused media files...", end="     ")
         backup = backup_media(games, media)
-
-        if backup is False:
-            print("[ All good ]")
+        print(backup)
 
     except Exception as err:
         raise ValueError(err)
