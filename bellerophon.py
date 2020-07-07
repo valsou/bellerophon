@@ -46,6 +46,7 @@ def init_config(configuration_path):
     # Bellerophon settings
     clean_media = bool(config_file["global"]["clean_media"]) if "clean_media" in config_file["global"].keys() else False
     collections_to_clean = config_file["global"]["collections_to_clean"] if "collections_to_clean" in config_file["global"].keys() else False
+    master_data = bool(config_file["global"]["master_data"]) if "master_data" in config_file["global"].keys() else False
 
     # Systems settings
     for folder in config_file['systems'].keys():
@@ -85,7 +86,8 @@ def init_config(configuration_path):
     configuration.update({
         "bellerophon": {
             "clean_media": clean_media,
-            "collections_to_clean": collections_to_clean
+            "collections_to_clean": collections_to_clean,
+            "master_data": master_data
         },
         "systems": {
             "available": systems_available,
@@ -136,8 +138,9 @@ def parse_gamelist(file):
 
         gamepath = instance_node(game.find('path'))
         gamename = Path(gamepath).name[:-len(Path(gamepath).suffix)]
-        gamepath_wext = Path(gamepath).name[:-len(Path(gamepath).suffix)]
 
+        # Manage multiple CD games
+        # Based on Skraper game id
         if gameid != 0 and gameid == last_game[0] and bool(games_dict):
             path = games_dict[last_game[1]]["file"]
             gamepath = path + f"\n  {gamepath}"
@@ -147,6 +150,7 @@ def parse_gamelist(file):
             gamename: {
                 "game": instance_node(game.find('name')),
                 "file": gamepath,
+                "file_name": Path(gamepath).name,
                 "developer": instance_node(game.find('developer')),
                 "publisher": instance_node(game.find('publisher')),
                 "genre": instance_node(game.find('genre')),
@@ -157,7 +161,7 @@ def parse_gamelist(file):
             }
         })
 
-        last_game = [gameid, gamepath_wext]
+        last_game = [gameid, gamename]
 
     return games_dict
 
@@ -247,12 +251,9 @@ def get_media(systems):
     return media_in_folders
 
 
-def create_metadata(data, games, media, parameters):
+def create_metadata(data, games, media, parameters, master):
 
-    def append_or_not(label, line):
-        if line is not None:
-            return f'{label}: {line}\n'
-        return ""
+    master_data = []
 
     for system in data.keys():
         print(
@@ -270,58 +271,73 @@ def create_metadata(data, games, media, parameters):
             if isinstance(value, list):
                 value = ','.join(value)
 
-            file.write(f"{key}: {value}\n")
+            line = f"{key}: {value}\n"
+            file.write(line)
+            if master:
+                master_data.append(line)
 
         file.write("\n")
+        if master:
+            master_data.append("\n")
 
         for game in games[system]:
 
             if game in data[system].keys():
 
-                file.write(
-                    append_or_not(
-                        "game",
-                        data[system][game]['game']))
+                if data[system][game]['game'] is not None:
+                    line = f"game: {data[system][game]['game']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "file",
-                        data[system][game]['file']))
+                if data[system][game]['file'] is not None:
+                    line = f"file: {data[system][game]['file']}\n"
+                    master_line = f"file: ./{system}/{data[system][game]['file_name']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(master_line)
 
-                file.write(
-                    append_or_not(
-                        "developer",
-                        data[system][game]['developer']))
+                if data[system][game]['developer'] is not None:
+                    line = f"developer: {data[system][game]['developer']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "publisher",
-                        data[system][game]['publisher']))
+                if data[system][game]['publisher'] is not None:
+                    line = f"publisher: {data[system][game]['publisher']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "genre",
-                        data[system][game]['genre']))
+                if data[system][game]['genre'] is not None:
+                    line = f"genre: {data[system][game]['genre']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "description",
-                        data[system][game]['description']))
+                if data[system][game]['description'] is not None:
+                    line = f"description: {data[system][game]['description']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "release",
-                        data[system][game]['release']))
+                if data[system][game]['release'] is not None:
+                    line = f"release: {data[system][game]['release']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "players",
-                        data[system][game]['players']))
+                if data[system][game]['players'] is not None:
+                    line = f"players: {data[system][game]['players']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
-                file.write(
-                    append_or_not(
-                        "rating",
-                        data[system][game]['rating']))
+                if data[system][game]['rating'] is not None:
+                    line = f"rating: {data[system][game]['rating']}\n"
+                    file.write(line)
+                    if master:
+                        master_data.append(line)
 
                 # Retrieve assets
                 if game in media[system]:
@@ -332,11 +348,28 @@ def create_metadata(data, games, media, parameters):
                         asset = f"assets.{asset_code}: {asset_path}\n"
                         file.write(asset)
 
+                        if master:
+                            master_path = f"./{system}/media/{asset_code}/{item.name}"
+                            master_asset = f"assets.{asset_code}: {master_path}\n"
+                            master_data.append(master_asset)
+
                 file.write("\n")
+                if master:
+                    master_data.append("\n")
 
         print("[ Done ]")
 
         file.close()
+
+    if master:
+        print(f" . . > ./metadata.txt... (e.g. master metadata.txt)     [ Done ]")
+        master_file = open(
+            BASE_PATH/'metadata.txt',
+            'w+',
+            encoding='utf-8')
+        for line in master_data:
+            master_file.write(line)
+        master_file.close()
 
 
 def backup_media(games, media, collections_to_clean):
@@ -371,11 +404,11 @@ def backup_media(games, media, collections_to_clean):
                     except Exception:
                         print(f"  . . > {source_backup}...", end="     ")
                         print("[ Error ]")
-    
+
     if backed_up > 0:
         return f"[ {backed_up} assets backed up ]"
     else:
-        return "[ Nothing to back up ]" 
+        return "[ Nothing to back up ]"
 
 
 def main():
@@ -430,7 +463,8 @@ def main():
             data,
             games,
             media,
-            configuration['systems']['available'])
+            configuration['systems']['available'],
+            configuration["bellerophon"]["master_data"])
     except Exception as err:
         raise ValueError(err)
 
