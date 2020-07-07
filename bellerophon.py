@@ -44,8 +44,8 @@ def init_config(configuration_path):
     systems_available = {}
 
     # Bellerophon settings
-    clean_media = bool(config_file["global"]["clean_media"])
-    collections_to_clean = config_file["global"]["collections_to_clean"]
+    clean_media = bool(config_file["global"]["clean_media"]) if "clean_media" in config_file["global"].keys() else False
+    collections_to_clean = config_file["global"]["collections_to_clean"] if "collections_to_clean" in config_file["global"].keys() else False
 
     # Systems settings
     for folder in config_file['systems'].keys():
@@ -342,36 +342,35 @@ def create_metadata(data, games, media, parameters):
 def backup_media(games, media, collections_to_clean):
 
     backed_up = 0
+    collections = collections_to_clean if collections_to_clean is not False else games.keys()
 
-    for system in games.keys():
+    for system in collections:
 
-        if system in collections_to_clean:
+        for key, value in media[system].items():
 
-            for key, value in media[system].items():
+            if key not in games[system]:
+                backup_dir = BASE_PATH / system / 'media.backup'
 
-                if key not in games[system]:
-                    backup_dir = BASE_PATH / system / 'media.backup'
+                if backup_dir.is_dir() is False:
+                    Path.mkdir(backup_dir)
 
-                    if backup_dir.is_dir() is False:
-                        Path.mkdir(backup_dir)
+                for item in value:
+                    parent_name = item.parent.name
+                    item_name = item.name
+                    asset_dir = backup_dir / parent_name
 
-                    for item in value:
-                        parent_name = item.parent.name
-                        item_name = item.name
-                        asset_dir = backup_dir / parent_name
+                    if asset_dir.is_dir() is False:
+                        Path.mkdir(asset_dir)
 
-                        if asset_dir.is_dir() is False:
-                            Path.mkdir(asset_dir)
+                    source_backup = f"{parent_name}/{item_name}"
+                    to_backup = asset_dir/item_name
 
-                        source_backup = f"{parent_name}/{item_name}"
-                        to_backup = asset_dir/item_name
-
-                        try:
-                            item.rename(to_backup)
-                            backed_up += 1
-                        except Exception:
-                            print(f"  . . > {source_backup}...", end="     ")
-                            print("[ Error ]")
+                    try:
+                        item.rename(to_backup)
+                        backed_up += 1
+                    except Exception:
+                        print(f"  . . > {source_backup}...", end="     ")
+                        print("[ Error ]")
     
     if backed_up > 0:
         return f"[ {backed_up} assets backed up ]"
