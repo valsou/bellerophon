@@ -14,7 +14,8 @@ launch: am start --user 0
   --activity-clear-top
 
 game: 1941: Counter Attack
-file: ./arcade/1941.zip
+file:
+  ./arcade/1941.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -28,7 +29,8 @@ assets.screenshot: ./arcade/media/screenshot/1941.png
 assets.wheel: ./arcade/media/wheel/1941.png
 
 game: 1942
-file: ./arcade/1942.zip
+file:
+  ./arcade/1942.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -42,7 +44,8 @@ assets.screenshot: ./arcade/media/screenshot/1942.png
 assets.wheel: ./arcade/media/wheel/1942.png
 
 game: 1943: The Battle of Midway
-file: ./arcade/1943.zip
+file:
+  ./arcade/1943.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -56,7 +59,8 @@ assets.screenshot: ./arcade/media/screenshot/1943.png
 assets.wheel: ./arcade/media/wheel/1943.png
 
 game: 1943 Kai: Midway Kaisen
-file: ./arcade/1943kai.zip
+file:
+  ./arcade/1943kai.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -70,7 +74,8 @@ assets.screenshot: ./arcade/media/screenshot/1943kai.png
 assets.wheel: ./arcade/media/wheel/1943kai.png
 
 game: 1944 : The Loop Master
-file: ./arcade/1944.zip
+file:
+  ./arcade/1944.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -84,7 +89,8 @@ assets.screenshot: ./arcade/media/screenshot/1944.png
 assets.wheel: ./arcade/media/wheel/1944.png
 
 game: 1945k III
-file: ./arcade/1945kiii.zip
+file:
+  ./arcade/1945kiii.zip
 developer: Promat
 publisher: Oriental Soft
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -98,7 +104,8 @@ assets.screenshot: ./arcade/media/screenshot/1945kiii.png
 assets.wheel: ./arcade/media/wheel/1945kiii.png
 
 game: 19XX : The War Against Destiny
-file: ./arcade/19xx.zip
+file:
+  ./arcade/19xx.zip
 developer: Capcom
 publisher: Capcom
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -112,7 +119,8 @@ assets.screenshot: ./arcade/media/screenshot/19xx.png
 assets.wheel: ./arcade/media/wheel/19xx.png
 
 game: 2020 Super Baseball
-file: ./arcade/2020bb.zip
+file:
+  ./arcade/2020bb.zip
 developer: Pallas
 publisher: SNK
 genre: Sport-Sport / Baseball
@@ -126,7 +134,8 @@ assets.screenshot: ./arcade/media/screenshot/2020bb.png
 assets.wheel: ./arcade/media/wheel/2020bb.png
 
 game: 3 Count Bout
-file: ./arcade/3countb.zip
+file:
+  ./arcade/3countb.zip
 developer: SNK
 publisher: SNK
 genre: Combat
@@ -140,7 +149,8 @@ assets.screenshot: ./arcade/media/screenshot/3countb.png
 assets.wheel: ./arcade/media/wheel/3countb.png
 
 game: Three Wonders
-file: ./arcade/3wonders.zip
+file:
+  ./arcade/3wonders.zip
 developer: Capcom
 publisher: Capcom
 genre: Compilation-Plateforme
@@ -154,7 +164,8 @@ assets.screenshot: ./arcade/media/screenshot/3wonders.png
 assets.wheel: ./arcade/media/wheel/3wonders.png
 
 game: '88 Games
-file: ./arcade/88games.zip
+file:
+  ./arcade/88games.zip
 developer: Konami
 publisher: Konami
 genre: Sport / Course a pied-Sport
@@ -168,7 +179,8 @@ assets.screenshot: ./arcade/media/screenshot/88games.png
 assets.wheel: ./arcade/media/wheel/88games.png
 
 game: A.B. Cop
-file: ./arcade/abcop.zip
+file:
+  ./arcade/abcop.zip
 developer: Sega
 publisher: Sega
 genre: Course de Moto vue 3eme pers.-Course, Conduite
@@ -182,7 +194,8 @@ assets.screenshot: ./arcade/media/screenshot/abcop.png
 assets.wheel: ./arcade/media/wheel/abcop.png
 
 game: After Burner II
-file: ./arcade/aburner2.zip
+file:
+  ./arcade/aburner2.zip
 developer: Sega
 publisher: Sega
 genre: Tir / Avion, 3eme personne-Tir
@@ -196,7 +209,8 @@ assets.screenshot: ./arcade/media/screenshot/aburner2.png
 assets.wheel: ./arcade/media/wheel/aburner2.png
 
 game: Act-Fancer: Cybernetick Hyper Weapon
-file: ./arcade/actfancr.zip
+file:
+  ./arcade/actfancr.zip
 developer: Data East
 publisher: Data East
 genre: Plateforme / Shooter Scrolling-Plateforme
@@ -209,7 +223,8 @@ assets.screenshot: ./arcade/media/screenshot/actfancr.png
 assets.wheel: ./arcade/media/wheel/actfancr.png
 
 game: Sonic Wings
-file: ./arcade/aerofgt.zip
+file:
+  ./arcade/aerofgt.zip
 developer: Video System
 publisher: Video System
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -223,7 +238,8 @@ assets.screenshot: ./arcade/media/screenshot/aerofgt.png
 assets.wheel: ./arcade/media/wheel/aerofgt.png
 
 game: Action Fighter
-file: ./arcade/afighter.zip
+file:
+  ./arcade/afighter.zip
 developer: Sega
 publisher: Sega
 genre: Tir / Vertical-Tir
@@ -237,7 +253,8 @@ assets.screenshot: ./arcade/media/screenshot/afighter.png
 assets.wheel: ./arcade/media/wheel/afighter.png
 
 game: Akuu Gallet
-file: ./arcade/agallet.zip
+file:
+  ./arcade/agallet.zip
 developer: Gazelle
 publisher: Banpresto
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -251,7 +268,8 @@ assets.screenshot: ./arcade/media/screenshot/agallet.png
 assets.wheel: ./arcade/media/wheel/agallet.png
 
 game: Air Buster: Trouble Specialty Raid Unit
-file: ./arcade/airbustr.zip
+file:
+  ./arcade/airbustr.zip
 developer: Kaneko
 publisher: Kaneko
 genre: Shoot'em Up-Shoot'em up / Horizontal
@@ -264,7 +282,8 @@ assets.screenshot: ./arcade/media/screenshot/airbustr.png
 assets.wheel: ./arcade/media/wheel/airbustr.png
 
 game: Air Duel
-file: ./arcade/airduel.zip
+file:
+  ./arcade/airduel.zip
 developer: Irem
 publisher: Irem
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -277,7 +296,8 @@ assets.screenshot: ./arcade/media/screenshot/airduel.png
 assets.wheel: ./arcade/media/wheel/airduel.png
 
 game: Airwolf
-file: ./arcade/airwolf.zip
+file:
+  ./arcade/airwolf.zip
 developer: Kyugo Boueki
 publisher: Kyugo Boueki
 genre: Shoot'em Up-Shoot'em up / Horizontal
@@ -290,7 +310,8 @@ assets.screenshot: ./arcade/media/screenshot/airwolf.png
 assets.wheel: ./arcade/media/wheel/airwolf.png
 
 game: Ajax
-file: ./arcade/ajax.zip
+file:
+  ./arcade/ajax.zip
 developer: Konami
 publisher: Konami
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -303,7 +324,8 @@ assets.screenshot: ./arcade/media/screenshot/ajax.png
 assets.wheel: ./arcade/media/wheel/ajax.png
 
 game: Alex Kidd: The Lost Stars
-file: ./arcade/alexkidd.zip
+file:
+  ./arcade/alexkidd.zip
 developer: Sega
 publisher: Sega
 genre: Plateforme / Run Jump Scrolling-Plateforme
@@ -316,7 +338,8 @@ assets.screenshot: ./arcade/media/screenshot/alexkidd.png
 assets.wheel: ./arcade/media/wheel/alexkidd.png
 
 game: Alligator Hunt
-file: ./arcade/aligator.zip
+file:
+  ./arcade/aligator.zip
 developer: Gaelco
 publisher: Gaelco
 genre: Shoot'em Up-Shoot'em up / Vertical-Tir / 3eme Personne-Tir
@@ -329,7 +352,8 @@ assets.screenshot: ./arcade/media/screenshot/aligator.png
 assets.wheel: ./arcade/media/wheel/aligator.png
 
 game: Alpha Mission II
-file: ./arcade/alpham2.zip
+file:
+  ./arcade/alpham2.zip
 developer: SNK
 publisher: SNK
 genre: Shoot'em Up-Shoot'em up / Vertical
@@ -343,7 +367,8 @@ assets.screenshot: ./arcade/media/screenshot/alpham2.png
 assets.wheel: ./arcade/media/wheel/alpham2.png
 
 game: Altered Beast
-file: ./arcade/altbeast.zip
+file:
+  ./arcade/altbeast.zip
 developer: Sega
 publisher: Sega
 genre: Plateforme / Fighter Scrolling-Plateforme
@@ -357,7 +382,8 @@ assets.screenshot: ./arcade/media/screenshot/altbeast.png
 assets.wheel: ./arcade/media/wheel/altbeast.png
 
 game: Soldier Girl Amazon
-file: ./arcade/amazon.zip
+file:
+  ./arcade/amazon.zip
 developer: Nichibutsu
 publisher: Nichibutsu
 genre: Tir / Run and Gun-Tir
@@ -370,7 +396,8 @@ assets.screenshot: ./arcade/media/screenshot/amazon.png
 assets.wheel: ./arcade/media/wheel/amazon.png
 
 game: Amidar
-file: ./arcade/amidar.zip
+file:
+  ./arcade/amidar.zip
 developer: Konami
 publisher: Konami
 genre: Action-Action / Labyrinthe
@@ -383,7 +410,8 @@ assets.screenshot: ./arcade/media/screenshot/amidar.png
 assets.wheel: ./arcade/media/wheel/amidar.png
 
 game: Andro Dunos
-file: ./arcade/androdun.zip
+file:
+  ./arcade/androdun.zip
 developer: Visco
 publisher: SNK
 genre: Shoot'em Up-Shoot'em up / Horizontal
@@ -397,7 +425,8 @@ assets.screenshot: ./arcade/media/screenshot/androdun.png
 assets.wheel: ./arcade/media/wheel/androdun.png
 
 game: Anteater
-file: ./arcade/anteater.zip
+file:
+  ./arcade/anteater.zip
 developer: Tago Electronics
 publisher: Tago Electronics
 genre: Action-Action / Labyrinthe
@@ -410,7 +439,8 @@ assets.screenshot: ./arcade/media/screenshot/anteater.png
 assets.wheel: ./arcade/media/wheel/anteater.png
 
 game: Aggressors of Dark Kombat
-file: ./arcade/aodk.zip
+file:
+  ./arcade/aodk.zip
 developer: ADK
 publisher: SNK
 genre: Combat / Versus-Combat
@@ -424,7 +454,8 @@ assets.screenshot: ./arcade/media/screenshot/aodk.png
 assets.wheel: ./arcade/media/wheel/aodk.png
 
 game: Art of Fighting
-file: ./arcade/aof.zip
+file:
+  ./arcade/aof.zip
 developer: SNK
 publisher: SNK
 genre: Combat / Versus-Combat
@@ -438,7 +469,8 @@ assets.screenshot: ./arcade/media/screenshot/aof.png
 assets.wheel: ./arcade/media/wheel/aof.png
 
 game: Art of Fighting 2
-file: ./arcade/aof2.zip
+file:
+  ./arcade/aof2.zip
 developer: SNK
 publisher: SNK
 genre: Combat / Versus-Combat
@@ -452,7 +484,8 @@ assets.screenshot: ./arcade/media/screenshot/aof2.png
 assets.wheel: ./arcade/media/wheel/aof2.png
 
 game: Art of Fighting 3 - The Path of the Warrior
-file: ./arcade/aof3.zip
+file:
+  ./arcade/aof3.zip
 developer: SNK
 publisher: SNK
 genre: Combat / Versus-Combat
@@ -466,7 +499,8 @@ assets.screenshot: ./arcade/media/screenshot/aof3.png
 assets.wheel: ./arcade/media/wheel/aof3.png
 
 game: Aqua Jack
-file: ./arcade/aquajack.zip
+file:
+  ./arcade/aquajack.zip
 developer: Romstar Incorporated
 publisher: Taito
 genre: Tir / Vehicule, 3eme personne-Tir
@@ -479,7 +513,8 @@ assets.screenshot: ./arcade/media/screenshot/aquajack.png
 assets.wheel: ./arcade/media/wheel/aquajack.png
 
 game: Aquarium
-file: ./arcade/aquarium.zip
+file:
+  ./arcade/aquarium.zip
 developer: Excellent Systems
 publisher: Excellent System
 genre: Puzzle-Game / Tomber-Puzzle-Game
@@ -492,7 +527,8 @@ assets.screenshot: ./arcade/media/screenshot/aquarium.png
 assets.wheel: ./arcade/media/wheel/aquarium.png
 
 game: Arabian
-file: ./arcade/arabian.zip
+file:
+  ./arcade/arabian.zip
 developer: Atari
 publisher: Atari
 genre: Plateforme / Run Jump-Plateforme
@@ -505,7 +541,8 @@ assets.screenshot: ./arcade/media/screenshot/arabian.png
 assets.wheel: ./arcade/media/wheel/arabian.png
 
 game: Arabian Magic
-file: ./arcade/arabianm.zip
+file:
+  ./arcade/arabianm.zip
 developer: Taito
 publisher: Taito
 genre: Combat / 2.5D-Combat
@@ -518,7 +555,8 @@ assets.screenshot: ./arcade/media/screenshot/arabianm.png
 assets.wheel: ./arcade/media/wheel/arabianm.png
 
 game: Arkanoid
-file: ./arcade/arkanoid.zip
+file:
+  ./arcade/arkanoid.zip
 developer: Taito
 publisher: Taito
 genre: Action / Casse briques
@@ -531,7 +569,8 @@ assets.screenshot: ./arcade/media/screenshot/arkanoid.png
 assets.wheel: ./arcade/media/wheel/arkanoid.png
 
 game: Ark Area
-file: ./arcade/arkarea.zip
+file:
+  ./arcade/arkarea.zip
 developer: UPL
 publisher: UPL
 genre: Tir
@@ -544,7 +583,8 @@ assets.screenshot: ./arcade/media/screenshot/arkarea.png
 assets.wheel: ./arcade/media/wheel/arkarea.png
 
 game: Tournament Arkanoid
-file: ./arcade/arkatour.zip
+file:
+  ./arcade/arkatour.zip
 developer: Taito
 publisher: Taito
 genre: Action / Casse briques-Action
@@ -557,7 +597,8 @@ assets.screenshot: ./arcade/media/screenshot/arkatour.png
 assets.wheel: ./arcade/media/wheel/arkatour.png
 
 game: Arkanoid - Revenge Of Doh
-file: ./arcade/arknoid2.zip
+file:
+  ./arcade/arknoid2.zip
 developer: Taito
 publisher: Taito
 genre: Action / Casse briques-Action
@@ -570,7 +611,8 @@ assets.screenshot: ./arcade/media/screenshot/arknoid2.png
 assets.wheel: ./arcade/media/wheel/arknoid2.png
 
 game: Arkanoid Returns
-file: ./arcade/arkretrn.zip
+file:
+  ./arcade/arkretrn.zip
 developer: Taito
 publisher: Taito
 genre: Action / Casse briques-Action
@@ -591,7 +633,8 @@ launch: am start --user 0
   -d "file://{file.path}"
 
 game: Cannon Spike
-file: ./sega_dreamcast/Cannon Spike (2000)(Capcom)(US)[!].chd
+file:
+  ./sega_dreamcast/Cannon Spike (2000)(Capcom)(US)[!].chd
 developer: Psikyo
 publisher: Capcom
 genre: Action
@@ -605,7 +648,8 @@ assets.screenshot: ./sega_dreamcast/media/screenshot/Cannon Spike (2000)(Capcom)
 assets.wheel: ./sega_dreamcast/media/wheel/Cannon Spike (2000)(Capcom)(US)[!].png
 
 game: Capcom vs. SNK - Millennium Fight 2000
-file: ./sega_dreamcast/Capcom vs. SNK (2000)(Capcom)(US)[!].chd
+file:
+  ./sega_dreamcast/Capcom vs. SNK (2000)(Capcom)(US)[!].chd
 developer: Capcom
 publisher: Virgin
 genre: Combat
@@ -619,7 +663,8 @@ assets.screenshot: ./sega_dreamcast/media/screenshot/Capcom vs. SNK (2000)(Capco
 assets.wheel: ./sega_dreamcast/media/wheel/Capcom vs. SNK (2000)(Capcom)(US)[!].png
 
 game: Capcom Vs. Snk 2 Millionaire Fighting 2001
-file: ./sega_dreamcast/Capcom vs. SNK 2 Millionaire Fighting 2001 (2001)(Capcom)(NTSC)(JP)(en)[!].chd
+file:
+  ./sega_dreamcast/Capcom vs. SNK 2 Millionaire Fighting 2001 (2001)(Capcom)(NTSC)(JP)(en)[!].chd
 developer: Capcom
 publisher: Capcom
 genre: Combat-Combat / Versus
@@ -632,7 +677,9 @@ assets.screenshot: ./sega_dreamcast/media/screenshot/Capcom vs. SNK 2 Millionair
 assets.wheel: ./sega_dreamcast/media/wheel/Capcom vs. SNK 2 Millionaire Fighting 2001 (2001)(Capcom)(NTSC)(JP)(en)[!].png
 
 game: Resident Evil Code: Veronica
-file: ./sega_dreamcast/Resident Evil - Code Veronica v1.000 (2000)(Capcom)(NTSC)(US)(Disc 2 of 2)[!].chd
+file:
+  ./sega_dreamcast/Resident Evil - Code Veronica v1.000 (2000)(Capcom)(NTSC)(US)(Disc 1 of 2)[!].chd
+  ./sega_dreamcast/Resident Evil - Code Veronica v1.000 (2000)(Capcom)(NTSC)(US)(Disc 2 of 2)[!].chd
 developer: Capcom
 publisher: Eidos Interactive
 genre: Action
@@ -645,7 +692,8 @@ assets.screenshot: ./sega_dreamcast/media/screenshot/Resident Evil - Code Veroni
 assets.wheel: ./sega_dreamcast/media/wheel/Resident Evil - Code Veronica v1.000 (2000)(Capcom)(NTSC)(US)(Disc 2 of 2)[!].png
 
 game: Tetris 4D
-file: ./sega_dreamcast/Tetris 4D v1.005 (1998)(Bullet-Proof)(NTSC)(JP)(en)[!].chd
+file:
+  ./sega_dreamcast/Tetris 4D v1.005 (1998)(Bullet-Proof)(NTSC)(JP)(en)[!].chd
 developer: Bullet Proof Software
 publisher: Bullet Proof Software
 genre: Puzzle-Game

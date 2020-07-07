@@ -137,13 +137,13 @@ def parse_gamelist(file):
             gameid = 0
 
         gamepath = instance_node(game.find('path'))
-        gamename = Path(gamepath).name[:-len(Path(gamepath).suffix)]
+        gamename = Path(gamepath).stem
 
         # Manage multiple CD games
         # Based on Skraper game id
         if gameid != 0 and gameid == last_game[0] and bool(games_dict):
             path = games_dict[last_game[1]]["file"]
-            gamepath = path + f"\n  {gamepath}"
+            gamepath = f"{path.strip()}\n{gamepath}"
             del games_dict[last_game[1]]
 
         games_dict.update({
@@ -214,7 +214,7 @@ def get_games(systems):
             current_path = BASE_PATH/folder
             games_suffix = systems[folder]['extension']
             games = [
-                str(x.name)[:-len(x.suffix)] for x
+                x.stem for x
                 in current_path.iterdir()
                 if x.is_file() and str(x.suffix)[1:] in games_suffix]
             games_in_folders.update({
@@ -240,7 +240,7 @@ def get_media(systems):
     for system in systems_in_config:
         media_path = Path(BASE_PATH/system/'media')
         media = {
-            x: str(x.name)[:-len(x.suffix)] for x
+            x: x.stem for x
             in media_path.rglob('*')
             if x.suffix[1:] in MEDIA_EXT}
         sorted_media = sort_media(media)
@@ -291,11 +291,13 @@ def create_metadata(data, games, media, parameters, master):
                         master_data.append(line)
 
                 if data[system][game]['file'] is not None:
-                    line = f"file: {data[system][game]['file']}\n"
-                    master_line = f"file: ./{system}/{data[system][game]['file_name']}\n"
-                    file.write(line)
+                    file.write("file:\n")
+                    for file_path in data[system][game]['file'].splitlines():
+                        file.write(f"  {file_path}\n")
                     if master:
-                        master_data.append(master_line)
+                        master_data.append("file:\n")
+                        for file_path in data[system][game]['file'].splitlines():
+                            master_data.append(f"  ./{system}{file_path[1:]}\n")
 
                 if data[system][game]['developer'] is not None:
                     line = f"developer: {data[system][game]['developer']}\n"
@@ -362,7 +364,7 @@ def create_metadata(data, games, media, parameters, master):
         file.close()
 
     if master:
-        print(f" . . > ./metadata.txt... (e.g. master metadata.txt)     [ Done ]")
+        print(" . . > ./metadata.txt... (e.g. master metadata.txt)     [ Done ]")
         master_file = open(
             BASE_PATH/'metadata.txt',
             'w+',
