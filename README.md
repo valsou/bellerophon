@@ -7,6 +7,12 @@ And one Bellerophon to kick the ass of the chimera.
 If you want it to work for your need, or simply work (because there is a bug that i have not seen), do not hesitate to let me know. Thank you. :)
 
 ## Changelog
+- version 0.2 (07/07/2020) :
+	+ add more settings in bellerophon.conf :
+        - clean_media = true/false/0/1 # clean or not the assets library
+        - collections_to_clean = [ "system_directory_name", "system_directory_name" ] # used if clean_media = true/1
+        - master_data = true/false/0/1 # create a master metadata.txt at the root
+	+ no more prints when backing up an asset. Only if there is an error
 
 - version 0.16 (06/07/2020) :
 	+ no more <PATH_VARIABLE> in .conf
