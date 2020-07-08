@@ -10,9 +10,6 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import toml
 
-
-start = datetime.now()
-
 # BELLEROPHON
 # version 0.1
 
@@ -44,9 +41,18 @@ def init_config(configuration_path):
     systems_available = {}
 
     # Bellerophon settings
-    clean_media = bool(config_file["global"]["clean_media"]) if "clean_media" in config_file["global"].keys() else False
-    collections_to_clean = config_file["global"]["collections_to_clean"] if "collections_to_clean" in config_file["global"].keys() else False
-    master_data = bool(config_file["global"]["master_data"]) if "master_data" in config_file["global"].keys() else False
+    clean_media = (
+        bool(config_file["global"]["clean_media"])
+        if "clean_media" in config_file["global"].keys()
+        else False)
+    collections_to_clean = (
+        config_file["global"]["collections_to_clean"]
+        if "collections_to_clean" in config_file["global"].keys()
+        else False)
+    master_data = (
+        bool(config_file["global"]["master_data"])
+        if "master_data" in config_file["global"].keys()
+        else False)
 
     # Systems settings
     for folder in config_file['systems'].keys():
@@ -73,6 +79,7 @@ def init_config(configuration_path):
                 folder: {
                     "collection": collection,
                     "shortname": shortname,
+                    "directory": folder,
                     "extension": extension,
                     "launch": launch
                 }
@@ -150,7 +157,6 @@ def parse_gamelist(file):
             gamename: {
                 "game": instance_node(game.find('name')),
                 "file": gamepath,
-                "file_name": Path(gamepath).name,
                 "developer": instance_node(game.find('developer')),
                 "publisher": instance_node(game.find('publisher')),
                 "genre": instance_node(game.find('genre')),
@@ -166,6 +172,15 @@ def parse_gamelist(file):
     return games_dict
 
 
+def sort_media(media):
+    sorted_media = {}
+
+    for key, value in sorted(media.items()):
+        sorted_media.setdefault(value, []).append(key)
+
+    return sorted_media
+
+
 def generate_data(systems):
     data = {}
     iter = 0
@@ -178,20 +193,13 @@ def generate_data(systems):
         gamelist_path = BASE_PATH / system / 'gamelist.xml'
 
         if gamelist_path.is_file():
-
-            parent_folder = gamelist_path.parent.name
-            print(
-                f"  . . > Parsing {parent_folder}/gamelist.xml...",
-                end="     ")
-
             data.update({
                 gamelist_path.parent.name: parse_gamelist(gamelist_path)})
-            print("[ Done ]")
 
         else:
             parent_folder = gamelist_path.parent.name
             print(
-                f"  . . > Parsing {parent_folder}/gamelist.xml...",
+                f"  . . > {parent_folder}/gamelist.xml...",
                 end="     ")
             print("[ Not found ]")
 
@@ -222,15 +230,6 @@ def get_games(systems):
             })
 
     return games_in_folders
-
-
-def sort_media(media):
-    sorted_media = {}
-
-    for key, value in sorted(media.items()):
-        sorted_media.setdefault(value, []).append(key)
-
-    return sorted_media
 
 
 def get_media(systems):
@@ -272,8 +271,10 @@ def create_metadata(data, games, media, parameters, master):
                 value = ','.join(value)
 
             line = f"{key}: {value}\n"
-            file.write(line)
-            if master:
+            if key != "directory":
+                file.write(line)
+
+            if master and key != "extension":
                 master_data.append(line)
 
         file.write("\n")
@@ -364,7 +365,10 @@ def create_metadata(data, games, media, parameters, master):
         file.close()
 
     if master:
-        print(" . . > ./metadata.txt... (e.g. master metadata.txt)     [ Done ]")
+        print(
+            "  . . > Creating ./metadata.txt... (e.g. master metadata.txt)",
+            end="     ")
+        print("[ Done ]")
         master_file = open(
             BASE_PATH/'metadata.txt',
             'w+',
@@ -377,7 +381,10 @@ def create_metadata(data, games, media, parameters, master):
 def backup_media(games, media, collections_to_clean):
 
     backed_up = 0
-    collections = collections_to_clean if collections_to_clean is not False else games.keys()
+    collections = (
+        collections_to_clean
+        if collections_to_clean is not False
+        else games.keys())
 
     for system in collections:
 
@@ -476,7 +483,10 @@ def main():
         # Backup unused media files
         try:
             print("  > Checking unused media files...", end="     ")
-            backup = backup_media(games, media, configuration["bellerophon"]["collections_to_clean"])
+            backup = backup_media(
+                games,
+                media,
+                configuration["bellerophon"]["collections_to_clean"])
             print(backup)
 
         except Exception as err:
@@ -484,6 +494,7 @@ def main():
 
 
 if __name__ == "__main__":
+    start = datetime.now()
     BEGIN_MESSAGE = '''
   ≠------------------------------------------------≠
   ¦    * . BELLEROPHON * . *                       ¦

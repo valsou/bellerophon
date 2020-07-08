@@ -1,6 +1,6 @@
 collection: Arcade
 shortname: arcade
-extension: chd,zip
+directory: arcade
 launch: am start --user 0
   -n com.retroarch/.browser.retroactivity.RetroActivityFuture
   -e ROM "{file.path}"
@@ -626,7 +626,7 @@ assets.wheel: ./arcade/media/wheel/arkretrn.png
 
 collection: Dreamcast
 shortname: dreamcast
-extension: chd,iso
+directory: sega_dreamcast
 launch: am start --user 0
   -a android.intent.action.VIEW
   -n io.recompiled.redream/.MainActivity
