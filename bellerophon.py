@@ -58,36 +58,43 @@ def init_config(configuration_path):
     for folder in config_file['systems'].keys():
 
         if folder in BASE_FOLDERS:
-            # Retrieve items
-            shortname = config_file['systems'][folder]['shortname']
-            collection = config_file['systems'][folder]['collection']
-            dict_extension = config_file['systems'][folder]['extension']
 
-            extension = [
-                x.strip() for x
-                in dict_extension.split(',')]
+            data = {}
+
+            if "collection" in config_file['systems'][folder]:
+                data.update({"collection": config_file['systems'][folder]['collection']})
+
+            if "shortname" in config_file['systems'][folder]:
+                data.update({"shortname": config_file['systems'][folder]['shortname']})
+            
+            data.update({"directory": folder})
+
+            if "extension" in config_file['systems'][folder]:
+                dict_extension = config_file['systems'][folder]['extension']
+                extension = [
+                    x.strip() for x
+                    in dict_extension.split(',')]
+                data.update({"extension": extension})
 
             if "launch" in config_file['systems'][folder]:
-                launch = config_file['systems'][folder]['launch']
+                data.update({"launch": config_file['systems'][folder]['launch']})
             else:
                 core = config_file['systems'][folder]['core']
                 launch = config_file['global']['launch'].replace(
                         "<CORE_VARIABLE>", core).replace(
                             "<SYSTEM_VARIABLE>", folder)
+                data.update({"launch": launch})
 
             item = {
-                folder: {
-                    "collection": collection,
-                    "shortname": shortname,
-                    "directory": folder,
-                    "extension": extension,
-                    "launch": launch
-                }
+                folder: {}
             }
 
-            # Availables games
+            item[folder].update(data)
+
+            # Available systems
             systems_available.update(item)
 
+        # Unavailable systems
         systems_unavailable.append(folder)
 
     configuration.update({
@@ -259,6 +266,8 @@ def create_metadata(data, games, media, parameters, master):
             f"  . . > Creating {system}/metadata.txt...",
             end="     ")
 
+        metadata = []
+
         file = open(
             BASE_PATH/system/'metadata.txt',
             'w+',
@@ -272,7 +281,7 @@ def create_metadata(data, games, media, parameters, master):
 
             line = f"{key}: {value}\n"
             if key != "directory":
-                file.write(line)
+                metadata.append(line)
 
             if master and key != "extension":
                 master_data.append(line)
@@ -287,14 +296,16 @@ def create_metadata(data, games, media, parameters, master):
 
                 if data[system][game]['game'] is not None:
                     line = f"game: {data[system][game]['game']}\n"
-                    file.write(line)
+
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['file'] is not None:
-                    file.write("file:\n")
+
+                    metadata.append("file:\n")
                     for file_path in data[system][game]['file'].splitlines():
-                        file.write(f"  {file_path}\n")
+
+                        metadata.append(f"  {file_path}\n")
                     if master:
                         master_data.append("file:\n")
                         for file_path in data[system][game]['file'].splitlines():
@@ -302,43 +313,50 @@ def create_metadata(data, games, media, parameters, master):
 
                 if data[system][game]['developer'] is not None:
                     line = f"developer: {data[system][game]['developer']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['publisher'] is not None:
                     line = f"publisher: {data[system][game]['publisher']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['genre'] is not None:
                     line = f"genre: {data[system][game]['genre']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['description'] is not None:
                     line = f"description: {data[system][game]['description']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['release'] is not None:
                     line = f"release: {data[system][game]['release']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['players'] is not None:
                     line = f"players: {data[system][game]['players']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
                 if data[system][game]['rating'] is not None:
                     line = f"rating: {data[system][game]['rating']}\n"
-                    file.write(line)
+
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
@@ -349,20 +367,23 @@ def create_metadata(data, games, media, parameters, master):
                         asset_code = item.parent.name
                         asset_path = f"./media/{asset_code}/{item.name}"
                         asset = f"assets.{asset_code}: {asset_path}\n"
-                        file.write(asset)
+
+                        metadata.append(asset)
 
                         if master:
                             master_path = f"./{system}/media/{asset_code}/{item.name}"
                             master_asset = f"assets.{asset_code}: {master_path}\n"
                             master_data.append(master_asset)
 
-                file.write("\n")
+                metadata.append("\n")
                 if master:
                     master_data.append("\n")
 
         print("[ Done ]")
 
-        file.close()
+        with open(BASE_PATH/system/'metadata.txt', 'w+', encoding='utf-8') as file:
+            for line in metadata:
+                file.write(line)
 
     if master:
         print(
