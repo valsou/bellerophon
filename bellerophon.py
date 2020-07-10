@@ -66,7 +66,7 @@ def init_config(configuration_path):
 
             if "shortname" in config_file['systems'][folder]:
                 data.update({"shortname": config_file['systems'][folder]['shortname']})
-            
+
             data.update({"directory": folder})
 
             if "extension" in config_file['systems'][folder]:
@@ -286,7 +286,7 @@ def create_metadata(data, games, media, parameters, master):
             if master and key != "extension":
                 master_data.append(line)
 
-        file.write("\n")
+        metadata.append("\n")
         if master:
             master_data.append("\n")
 
@@ -297,6 +297,7 @@ def create_metadata(data, games, media, parameters, master):
                 if data[system][game]['game'] is not None:
                     line = f"game: {data[system][game]['game']}\n"
 
+                    metadata.append(line)
                     if master:
                         master_data.append(line)
 
