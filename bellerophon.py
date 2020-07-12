@@ -278,6 +278,7 @@ def create_metadata(data, master):
             end="     ")
 
         metadata = []
+        games_count = 0
 
         # Generate settings header
         for key, setting in data[system]["settings"].items():
@@ -319,12 +320,13 @@ def create_metadata(data, master):
 
             metadata.append("\n")
             master_data.append("\n")
+            games_count += 1
 
         with open(BASE_PATH/system/'metadata.txt', 'w+', encoding='utf-8') as file:
             for line in metadata:
                 file.write(line)
 
-        print("[ Done ]")
+        print(f"[ Done ] [ {games_count} games written ]")
 
     if master:
         print(

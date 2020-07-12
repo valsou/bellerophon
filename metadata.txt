@@ -13,6 +13,17 @@ launch: am start --user 0
   -e SDCARD /storage/emulated/0/Roms/arcade
   --activity-clear-top
 
+game: 1943 Kai: Midway Kaisen
+file:
+  ./arcade/1943kai.zip
+developer: Capcom
+publisher: Capcom
+genre: Shoot'em Up-Shoot'em up / Vertical
+description: Un an après 1943 : The Battle of Midway, Capcom nous offre une version modifiée, 1943 Kai : Midway Kaisen, mais qui ne sort qu'au Japon.
+release: 1987-01-01
+players: 2
+rating: 70%
+
 game: 1944 : The Loop Master
 file:
   ./arcade/1944.zip
