@@ -11,7 +11,6 @@ import xml.etree.ElementTree as ET
 import toml
 
 # BELLEROPHON
-# version 0.1
 
 # Constants
 BASE_PATH = Path.cwd()
@@ -31,6 +30,13 @@ MEDIA_EXT = [
     'mp3',
     'ogg',
     'wav'
+]
+SETTINGS = [
+    'collection',
+    'shortname',
+    'extension',
+    'core',
+    'launch'
 ]
 
 
@@ -54,48 +60,42 @@ def init_config(configuration_path):
         if "master_data" in config_file["global"].keys()
         else False)
 
+    def sanitize_settings(key, value):
+        if key == "extension":
+            return [x.strip() for x in value.split(',')]
+        return value
+
     # Systems settings
     for folder in config_file['systems'].keys():
 
         if folder in BASE_FOLDERS:
 
-            data = {}
-
-            if "collection" in config_file['systems'][folder]:
-                data.update({"collection": config_file['systems'][folder]['collection']})
-
-            if "shortname" in config_file['systems'][folder]:
-                data.update({"shortname": config_file['systems'][folder]['shortname']})
+            data = {
+                x: sanitize_settings(x, config_file['systems'][folder][x])
+                for x
+                in config_file['systems'][folder]
+                if x in SETTINGS}
 
             data.update({"directory": folder})
 
-            if "extension" in config_file['systems'][folder]:
-                dict_extension = config_file['systems'][folder]['extension']
-                extension = [
-                    x.strip() for x
-                    in dict_extension.split(',')]
-                data.update({"extension": extension})
-
-            if "launch" in config_file['systems'][folder]:
-                data.update({"launch": config_file['systems'][folder]['launch']})
-            else:
-                core = config_file['systems'][folder]['core']
+            if "launch" not in data and "core" in data:
                 launch = config_file['global']['launch'].replace(
-                        "<CORE_VARIABLE>", core).replace(
+                        "<CORE_VARIABLE>", data['core']).replace(
                             "<SYSTEM_VARIABLE>", folder)
                 data.update({"launch": launch})
+                data.pop("core", None)
 
             item = {
                 folder: {}
             }
-
+            
             item[folder].update(data)
 
             # Available systems
             systems_available.update(item)
-
-        # Unavailable systems
-        systems_unavailable.append(folder)
+        else:
+            # Unavailable systems
+            systems_unavailable.append(folder)
 
     configuration.update({
         "bellerophon": {
@@ -179,23 +179,11 @@ def parse_gamelist(file):
     return games_dict
 
 
-def sort_media(media):
-    sorted_media = {}
-
-    for key, value in sorted(media.items()):
-        sorted_media.setdefault(value, []).append(key)
-
-    return sorted_media
-
-
 def generate_data(systems):
+
     data = {}
-    iter = 0
 
     for system in systems.keys():
-
-        if iter == 0:
-            print("")
 
         gamelist_path = BASE_PATH / system / 'gamelist.xml'
 
@@ -210,8 +198,6 @@ def generate_data(systems):
                 end="     ")
             print("[ Not found ]")
 
-        iter += 1
-
     if not data:
         raise ValueError("[ No System Found ]")
 
@@ -220,12 +206,12 @@ def generate_data(systems):
 
 def get_games(systems):
     games_in_folders = {}
-    all_folders = [x.name for x in BASE_PATH.iterdir() if x.is_dir()]
+    # all_folders = [x.name for x in BASE_PATH.iterdir() if x.is_dir()]
     systems_in_config = systems.keys()
 
     for folder in systems_in_config:
 
-        if folder in all_folders:
+        if folder in BASE_FOLDERS:
             current_path = BASE_PATH/folder
             games_suffix = systems[folder]['extension']
             games = [
@@ -242,6 +228,14 @@ def get_games(systems):
 def get_media(systems):
     media_in_folders = {}
     systems_in_config = systems.keys()
+
+    def sort_media(media):
+        sorted_media = {}
+
+        for key, value in sorted(media.items()):
+            sorted_media.setdefault(value, []).append(key)
+
+        return sorted_media
 
     for system in systems_in_config:
         media_path = Path(BASE_PATH/system/'media')
@@ -443,7 +437,10 @@ def backup_media(games, media, collections_to_clean):
 
 
 def main():
+
     # Configuration file
+    # input : bellerophon.conf path
+    # output : (dict) of global and per system settings
     try:
         print("  > Checking configuration file...", end="     ")
         configuration = init_config(CONFIG_PATH)
@@ -460,6 +457,7 @@ def main():
     try:
         print("  > Generating data...", end="     ")
         data = generate_data(configuration['systems']['available'])
+        print("[ Done ]")
     except ValueError as err:
         raise ValueError(err)
     except Exception:
@@ -513,6 +511,10 @@ def main():
 
         except Exception as err:
             raise ValueError(err)
+
+    # for not_found_system in configuration['systems']['available']:
+    # print(f"Not found systems : {', '.join(configuration['systems']['unavailable'])}")
+    print(f"  Not found systems : {', '.join(configuration['systems']['unavailable'])}")
 
 
 if __name__ == "__main__":

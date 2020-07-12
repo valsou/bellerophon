@@ -1,5 +1,5 @@
-collection: Arcade
 shortname: arcade
+collection: Arcade
 directory: arcade
 launch: am start --user 0
   -n com.retroarch/.browser.retroactivity.RetroActivityFuture
@@ -624,13 +624,13 @@ assets.boxFront: ./arcade/media/boxFront/arkretrn.png
 assets.screenshot: ./arcade/media/screenshot/arkretrn.png
 assets.wheel: ./arcade/media/wheel/arkretrn.png
 
-collection: Dreamcast
 shortname: dreamcast
-directory: sega_dreamcast
+collection: Dreamcast
 launch: am start --user 0
   -a android.intent.action.VIEW
   -n io.recompiled.redream/.MainActivity
   -d "file://{file.path}"
+directory: sega_dreamcast
 
 game: Cannon Spike
 file:
