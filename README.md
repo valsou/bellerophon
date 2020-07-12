@@ -7,21 +7,13 @@ And one Bellerophon to kick the ass of the chimera.
 If you want it to work for your need, or simply work (because there is a bug that i have not seen), do not hesitate to let me know. Thank you. :)
 
 ## Changelog
-- version 0.2 (07/07/2020) :
-	+ add more settings in bellerophon.conf :
-        - clean_media = true/false/0/1 # clean or not the assets library
-        - collections_to_clean = [ "system_directory_name", "system_directory_name" ] # used if clean_media = true/1
-        - master_data = true/false/0/1 # create a master metadata.txt at the root
-	+ no more prints when backing up an asset. Only if there is an error
-
-- version 0.16 (06/07/2020) :
-	+ no more <PATH_VARIABLE> in .conf
-	+ added <CORE_VARIABLE> and <SYSTEM_VARIABLE> instead.
-
-- version 0.15 (06/07/2020) :
-	+ Big refactoring to reach a Pylint note >9
-	+ Change of behavior for `path` parameter in `bellerophon.conf`. Please update your file accordingly.
-	Now `path` value is concatenated inside `launch` parameter (Retroarch) via `<PATH_VARIABLE>` keyword
+- version 0.11 (12/07/2020) :
+    + Big refactoring
+    + Add counter to see number of games written in metadata.txt
+    + Add "sort-by" system setting for bellerophon.conf -> see Pegasus documentation
+    + Add "clean_media" global setting for bellerophon.conf -> check unused assets or not
+    + Add "collections_to_clean" global setting for bellerophon.conf -> list of collections that you want to check (if None, all collections will be checked)
+    + Add "master_data" global setting for bellerophon.conf -> create a metadta.txt at the root (that's a merge of all metadata.txt)
 
 - version 0.1 (05/07/2020) :
 	+ Initialization of the project
