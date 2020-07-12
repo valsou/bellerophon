@@ -88,7 +88,7 @@ def init_config(configuration_path):
             item = {
                 folder: {}
             }
-            
+
             item[folder].update(data)
 
             # Available systems
@@ -150,14 +150,15 @@ def parse_gamelist(file):
         else:
             gameid = 0
 
-        gamepath = instance_node(game.find('path'))
-        gamename = Path(gamepath).stem
+        gamepath = [instance_node(game.find('path'))]
+
+        gamename = Path(gamepath[0]).stem
 
         # Manage multiple CD games
         # Based on Skraper game id
         if gameid != 0 and gameid == last_game[0] and bool(games_dict):
             path = games_dict[last_game[1]]["file"]
-            gamepath = f"{path.strip()}\n{gamepath}"
+            gamepath[0:0] = path
             del games_dict[last_game[1]]
 
         games_dict.update({
@@ -179,34 +180,8 @@ def parse_gamelist(file):
     return games_dict
 
 
-def generate_data(systems):
-
-    data = {}
-
-    for system in systems.keys():
-
-        gamelist_path = BASE_PATH / system / 'gamelist.xml'
-
-        if gamelist_path.is_file():
-            data.update({
-                gamelist_path.parent.name: parse_gamelist(gamelist_path)})
-
-        else:
-            parent_folder = gamelist_path.parent.name
-            print(
-                f"  . . > {parent_folder}/gamelist.xml...",
-                end="     ")
-            print("[ Not found ]")
-
-    if not data:
-        raise ValueError("[ No System Found ]")
-
-    return data
-
-
 def get_games(systems):
     games_in_folders = {}
-    # all_folders = [x.name for x in BASE_PATH.iterdir() if x.is_dir()]
     systems_in_config = systems.keys()
 
     for folder in systems_in_config:
@@ -233,7 +208,7 @@ def get_media(systems):
         sorted_media = {}
 
         for key, value in sorted(media.items()):
-            sorted_media.setdefault(value, []).append(key)
+            sorted_media.setdefault(value, {}).update({key.parent.name: key})
 
         return sorted_media
 
@@ -251,7 +226,49 @@ def get_media(systems):
     return media_in_folders
 
 
-def create_metadata(data, games, media, parameters, master):
+def generate_data(systems, games, media):
+
+    data = {}
+
+    for system in systems.keys():
+
+        gamelist_path = BASE_PATH / system / 'gamelist.xml'
+
+        if gamelist_path.is_file():
+            # data.update({
+            #     gamelist_path.parent.name: parse_gamelist(gamelist_path)})
+            # Parse gamelist.xml
+            gamelist = parse_gamelist(gamelist_path)
+
+            # Keep only existing games in folders
+            games_kept = {k: v for k, v in gamelist.items() if k in games[system]}
+
+            # Add media field to each game
+            for game in games_kept:
+                if game in media[system]:
+                    games_kept[game].update({"media": media[system][game]})
+
+            data.update({
+                system: {
+                    "settings": systems.get(system),
+                    "games": games_kept
+                }
+            })
+
+        else:
+            parent_folder = gamelist_path.parent.name
+            print(
+                f"  . . > {parent_folder}/gamelist.xml...",
+                end="     ")
+            print("[ Not found ]")
+
+    if not data:
+        raise ValueError("[ No System Found ]")
+
+    return data
+
+
+def create_metadata(data, master):
 
     master_data = []
 
@@ -262,139 +279,64 @@ def create_metadata(data, games, media, parameters, master):
 
         metadata = []
 
-        file = open(
-            BASE_PATH/system/'metadata.txt',
-            'w+',
-            encoding='utf-8')
+        # Generate settings header
+        for key, setting in data[system]["settings"].items():
+            if isinstance(setting, list):
+                setting = ','.join(setting)
+            line = line_master = f"{key}: {setting}\n"
 
-        # Generate system header
-        for key, value in parameters[system].items():
+            if key == "directory":
+                line = ""
 
-            if isinstance(value, list):
-                value = ','.join(value)
+            if key == "extension":
+                line_master = ""
 
-            line = f"{key}: {value}\n"
-            if key != "directory":
-                metadata.append(line)
-
-            if master and key != "extension":
-                master_data.append(line)
+            metadata.append(line)
+            if master:
+                master_data.append(line_master)
 
         metadata.append("\n")
-        if master:
+        master_data.append("\n")
+
+        for key, game in data[system]["games"].items():
+
+            for field, value in game.items():
+
+                line = line_master = f"{field}: {value}\n"
+
+                if field == "file":
+                    files = [f"\n  {x}" for x in value]
+                    files_master = [f"\n  ./{system}{x[1:]}" for x in value]
+                    line = f"{field}:{''.join(files)}\n"
+                    line_master = f"{field}:{''.join(files_master)}\n"
+
+                if field == "media":
+                    line = "".join(f"assets.{k}: ./media/{k}/{v.name}\n" for k, v in value.items())
+                    line_master = "".join(f"assets.{k}: ./{system}/media/{k}/{v.name}\n" for k, v in value.items())
+
+                metadata.append(line)
+                master_data.append(line_master)
+
+            metadata.append("\n")
             master_data.append("\n")
-
-        for game in games[system]:
-
-            if game in data[system].keys():
-
-                if data[system][game]['game'] is not None:
-                    line = f"game: {data[system][game]['game']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['file'] is not None:
-
-                    metadata.append("file:\n")
-                    for file_path in data[system][game]['file'].splitlines():
-
-                        metadata.append(f"  {file_path}\n")
-                    if master:
-                        master_data.append("file:\n")
-                        for file_path in data[system][game]['file'].splitlines():
-                            master_data.append(f"  ./{system}{file_path[1:]}\n")
-
-                if data[system][game]['developer'] is not None:
-                    line = f"developer: {data[system][game]['developer']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['publisher'] is not None:
-                    line = f"publisher: {data[system][game]['publisher']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['genre'] is not None:
-                    line = f"genre: {data[system][game]['genre']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['description'] is not None:
-                    line = f"description: {data[system][game]['description']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['release'] is not None:
-                    line = f"release: {data[system][game]['release']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['players'] is not None:
-                    line = f"players: {data[system][game]['players']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                if data[system][game]['rating'] is not None:
-                    line = f"rating: {data[system][game]['rating']}\n"
-
-                    metadata.append(line)
-                    if master:
-                        master_data.append(line)
-
-                # Retrieve assets
-                if game in media[system]:
-
-                    for item in media[system][game]:
-                        asset_code = item.parent.name
-                        asset_path = f"./media/{asset_code}/{item.name}"
-                        asset = f"assets.{asset_code}: {asset_path}\n"
-
-                        metadata.append(asset)
-
-                        if master:
-                            master_path = f"./{system}/media/{asset_code}/{item.name}"
-                            master_asset = f"assets.{asset_code}: {master_path}\n"
-                            master_data.append(master_asset)
-
-                metadata.append("\n")
-                if master:
-                    master_data.append("\n")
-
-        print("[ Done ]")
 
         with open(BASE_PATH/system/'metadata.txt', 'w+', encoding='utf-8') as file:
             for line in metadata:
                 file.write(line)
 
+        print("[ Done ]")
+
     if master:
         print(
             "  . . > Creating ./metadata.txt... (e.g. master metadata.txt)",
             end="     ")
+        with open(BASE_PATH/'metadata.txt', 'w+', encoding='utf-8') as master_file:
+            for line in master_data:
+                master_file.write(line)
         print("[ Done ]")
-        master_file = open(
-            BASE_PATH/'metadata.txt',
-            'w+',
-            encoding='utf-8')
-        for line in master_data:
-            master_file.write(line)
-        master_file.close()
 
 
-def backup_media(games, media, collections_to_clean):
+def backup_media(collections_to_clean, games, media):
 
     backed_up = 0
     collections = (
@@ -412,22 +354,21 @@ def backup_media(games, media, collections_to_clean):
                 if backup_dir.is_dir() is False:
                     Path.mkdir(backup_dir)
 
-                for item in value:
-                    parent_name = item.parent.name
+                for asset, item in value.items():
                     item_name = item.name
-                    asset_dir = backup_dir / parent_name
+                    asset_dir = backup_dir / asset
 
                     if asset_dir.is_dir() is False:
                         Path.mkdir(asset_dir)
 
-                    source_backup = f"{parent_name}/{item_name}"
+                    source_backup = f"{asset}/{item_name}"
                     to_backup = asset_dir/item_name
 
                     try:
                         item.rename(to_backup)
                         backed_up += 1
                     except Exception:
-                        print(f"  . . > {source_backup}...", end="     ")
+                        print(f"  . . > [{system}] -> {source_backup}...", end="     ")
                         print("[ Error ]")
 
     if backed_up > 0:
@@ -452,34 +393,19 @@ def main():
 
     print(flush=True)
 
-    # Generate data
+    games = get_games(configuration['systems']['available'])
+    media = get_media(configuration['systems']['available'])
 
+    # Generate data
     try:
         print("  > Generating data...", end="     ")
-        data = generate_data(configuration['systems']['available'])
+        data = generate_data(
+            configuration['systems']['available'],
+            games,
+            media)
         print("[ Done ]")
     except ValueError as err:
         raise ValueError(err)
-    except Exception:
-        raise ValueError("[ Unknown Error ]")
-
-    print(flush=True)
-
-    # Getting games in each folder
-    try:
-        print("  > Getting games in each folder...", end="     ")
-        games = get_games(configuration['systems']['available'])
-        print("[ Done ]")
-    except Exception:
-        raise ValueError("[ Unknown Error ]")
-
-    print(flush=True)
-
-    # Getting media in each folder
-    try:
-        print("  > Getting media in each folder...", end="     ")
-        media = get_media(configuration['systems']['available'])
-        print("[ Done ]")
     except Exception:
         raise ValueError("[ Unknown Error ]")
 
@@ -490,9 +416,6 @@ def main():
         print("  > Creating metadata files...")
         create_metadata(
             data,
-            games,
-            media,
-            configuration['systems']['available'],
             configuration["bellerophon"]["master_data"])
     except Exception as err:
         raise ValueError(err)
@@ -504,17 +427,19 @@ def main():
         try:
             print("  > Checking unused media files...", end="     ")
             backup = backup_media(
+                configuration["bellerophon"]["collections_to_clean"],
                 games,
-                media,
-                configuration["bellerophon"]["collections_to_clean"])
+                media)
             print(backup)
 
         except Exception as err:
             raise ValueError(err)
 
+    print(flush=True)
+
     # for not_found_system in configuration['systems']['available']:
     # print(f"Not found systems : {', '.join(configuration['systems']['unavailable'])}")
-    print(f"  Not found systems : {', '.join(configuration['systems']['unavailable'])}")
+    print(f"  [!] Not found systems : {', '.join(configuration['systems']['unavailable'])}")
 
 
 if __name__ == "__main__":
