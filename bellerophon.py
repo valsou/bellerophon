@@ -36,7 +36,8 @@ SETTINGS = [
     'shortname',
     'extension',
     'core',
-    'launch'
+    'launch',
+    'sort-by'
 ]
 
 

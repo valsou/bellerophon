@@ -86,6 +86,7 @@ assets.wheel: ./arcade/media/wheel/3countb.png
 
 shortname: dreamcast
 collection: Dreamcast
+sort-by: sega dreamcast
 launch: am start --user 0
   -a android.intent.action.VIEW
   -n io.recompiled.redream/.MainActivity
