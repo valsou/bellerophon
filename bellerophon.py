@@ -10,6 +10,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import toml
 
+
 # BELLEROPHON
 
 # Constants
@@ -175,6 +176,9 @@ def parse_gamelist(file):
                 "rating": instance_node(game.find('rating'), "rating")
             }
         })
+
+        # To remove unused information of metadata, otherwise Pegasus will throw warnings
+        games_dict[gamename] = {k: v for k, v in games_dict[gamename].items() if v is not None}
 
         last_game = [gameid, gamename]
 
