@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import toml
+import textwrap
 
 
 # BELLEROPHON
@@ -40,6 +41,7 @@ SETTINGS = [
     'launch',
     'sort-by'
 ]
+LONGTEXT_SANITIZED = textwrap.TextWrapper(width = 80, initial_indent = "  ", subsequent_indent = "  ")
 
 
 def init_config(configuration_path):
@@ -315,6 +317,9 @@ def create_metadata(data, master):
                     files_master = [f"\n  ./{system}{x[1:]}" for x in value]
                     line = f"{field}:{''.join(files)}\n"
                     line_master = f"{field}:{''.join(files_master)}\n"
+
+                if field == "description":
+                    line = line_master = f"{field}:\n{LONGTEXT_SANITIZED.fill(value)}\n"
 
                 if field == "media":
                     line = "".join(f"assets.{k}: ./media/{k}/{v.name}\n" for k, v in value.items())
