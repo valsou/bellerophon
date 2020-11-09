@@ -23,9 +23,11 @@ Bellerophon is a Python script to :
 toml >= 0.10.1
 
 Install or upgrade pip : https://pip.pypa.io/en/stable/installing/#upgrading-pip
+
 Module to install (TOML) : https://pypi.org/project/toml/
 
 You can type : `pip install requirements.txt`
+
 Or : `python -m pip install toml`
 
 Developed in a Python 3.6 environment.
