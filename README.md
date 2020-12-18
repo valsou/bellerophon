@@ -54,7 +54,7 @@ Ask for the right media folders names (they will be used as is).
 ### Bellerophon
 1. Download `bellerophon.py` and `bellerophon.sample.conf` at the root of your library. Below the tree of my own library :
 
-```   
+```
 NVIDIA_SHIELD/
 ├─ bellerophon.py
 ├─ bellerophon.conf
@@ -101,10 +101,12 @@ The config file consists of a global variable (for now juste the Retroarch comma
 |launch *optional* | string | A launch command that will override the default one. So the core variable will not be used. |
 
 ## Changelog
+- 18/12/2020
+    + Fix master data. Now a "master" folder is created with a `metadata.txt` inside. Use that one.
 - 23/09/2020
 	+ Fix description with indent and linebreaks
 	+ Fix bellerophon.sample.conf who had "collection" line under "shortname" line (that order doesn't work !)
-	
+
 - 12/07/2020
     	+ Big refactoring
     	+ Add counter to see number of games written in metadata.txt
