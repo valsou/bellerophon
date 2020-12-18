@@ -6,17 +6,8 @@ And one Bellerophon to kick the ass of the chimera.
 > For now i test and develop the script for my own use-case, e.g : Pegasus-frontend + Shield TV (Android), one `collection` (system) per metadata.txt
 If you want it to work for your need, or simply work (because there is a bug that i have not seen), do not hesitate to let me know. Thank you. :)
 
-## Changelog
-- version 0.11 (12/07/2020) :
-    + Big refactoring
-    + Add counter to see number of games written in metadata.txt
-    + Add "sort-by" system setting for bellerophon.conf -> see Pegasus documentation
-    + Add "clean_media" global setting for bellerophon.conf -> check unused assets or not
-    + Add "collections_to_clean" global setting for bellerophon.conf -> list of collections that you want to check (if None, all collections will be checked)
-    + Add "master_data" global setting for bellerophon.conf -> create a metadta.txt at the root (that's a merge of all metadata.txt)
-
-- version 0.1 (05/07/2020) :
-	+ Initialization of the project
+## Quick tutorial video
+https://www.youtube.com/watch?v=Jhuww7Jl6N0
 
 ## Pegasus-frontend
 [ https://pegasus-frontend.org ] or [ https://github.com/mmatyas/pegasus-frontend ]
@@ -28,21 +19,18 @@ Bellerophon is a Python script to :
 - generate metadata files
 - clean media library (unused assets). No need of the gamelist.xml for that.
 
-## Improvements and ideas
-- scrape directly via Bellerophon ? (maybe not...)
-- permit to take as *database* something else than gamelist.xml (EmulationStation) files
-- improve the .conf file to be compatible with all features proposed by Pegasus frontend (ignore files, regexes, sorting...)
-- be compatible with other folder structures (another name than `media`, names of games as folders names, etc.)
-- a GUI/CLI to choose what to do (e.g. just clean the media, just generate metadata files)
-- takeback a backed up asset if the game file is back in the folder
-- be compatible with « one metadata.txt multiple collections »
-
 ## Requirements
-Python >= 3.6
-
 toml >= 0.10.1
 
+Install or upgrade pip : https://pip.pypa.io/en/stable/installing/#upgrading-pip
+
+Module to install (TOML) : https://pypi.org/project/toml/
+
 You can type : `pip install requirements.txt`
+
+Or : `python -m pip install toml`
+
+Developed in a Python 3.6 environment.
 
 In order to work the script also needs :
 
@@ -54,12 +42,9 @@ If `gamelist.xml` is not found, the `metadata.txt` won't be created.
 **So scrape your games and ask your software to output a gamelist.xml.**
 
 **Skraper (Screen-scraper) does that very well. :)**
-
 [ https://www.skraper.net ]
 
-### Please, backup your `metadata.txt` files before running the script.
-### The script overwrite all `metadata.txt` for systems listed in `bellerophon.conf` and move unused assets in `media.backup` folder if necessary.
-### Nothing is removed.
+### Please, backup your `metadata.txt` files before running the script if you're not sure what your are doing. `metadata.txt` output is overwritten each time, `gamelist.xml` is read-only.
 
 ## Usage
 ### Gamelist.xml
@@ -69,7 +54,7 @@ Ask for the right media folders names (they will be used as is).
 ### Bellerophon
 1. Download `bellerophon.py` and `bellerophon.sample.conf` at the root of your library. Below the tree of my own library :
 
-```   
+```
 NVIDIA_SHIELD/
 ├─ bellerophon.py
 ├─ bellerophon.conf
@@ -114,3 +99,21 @@ The config file consists of a global variable (for now juste the Retroarch comma
 |extension | string | *A comma-separated list of file extensions (without the . dot), or a list of such lines. All files with these extensions will be included.* (official  documentation) Will be a list in the future. |
 |core *optional* | string | Libretro core name with *.so* extension. It will be concatenated in each metadata files. |
 |launch *optional* | string | A launch command that will override the default one. So the core variable will not be used. |
+
+## Changelog
+- 18/12/2020
+    + Fix master data. Now a "master" folder is created with a `metadata.txt` inside. Use that one.
+- 23/09/2020
+	+ Fix description with indent and linebreaks
+	+ Fix bellerophon.sample.conf who had "collection" line under "shortname" line (that order doesn't work !)
+
+- 12/07/2020
+    	+ Big refactoring
+    	+ Add counter to see number of games written in metadata.txt
+    	+ Add "sort-by" system setting for bellerophon.conf -> see Pegasus documentation
+    	+ Add "clean_media" global setting for bellerophon.conf -> check unused assets or not
+    	+ Add "collections_to_clean" global setting for bellerophon.conf -> list of collections that you want to check (if None, all collections will be checked)
+    	+ Add "master_data" global setting for bellerophon.conf -> create a metadta.txt at the root (that's a merge of all metadata.txt)
+
+- 05/07/2020
+	+ Initialization of the project

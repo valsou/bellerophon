@@ -295,9 +295,10 @@ def create_metadata(data, master):
 
             if key == "directory":
                 line = ""
+                line_master = f"{key}: ../{setting}\n"
 
-            if key == "extension":
-                line_master = ""
+            # if key == "extension":
+            #     line_master = ""
 
             metadata.append(line)
             if master:
@@ -314,7 +315,7 @@ def create_metadata(data, master):
 
                 if field == "file":
                     files = [f"\n  {x}" for x in value]
-                    files_master = [f"\n  ./{system}{x[1:]}" for x in value]
+                    files_master = [f"\n  ../{system}{x[1:]}" for x in value]
                     line = f"{field}:{''.join(files)}\n"
                     line_master = f"{field}:{''.join(files_master)}\n"
 
@@ -323,7 +324,7 @@ def create_metadata(data, master):
 
                 if field == "media":
                     line = "".join(f"assets.{k}: ./media/{k}/{v.name}\n" for k, v in value.items())
-                    line_master = "".join(f"assets.{k}: ./{system}/media/{k}/{v.name}\n" for k, v in value.items())
+                    line_master = "".join(f"assets.{k}: ../{system}/media/{k}/{v.name}\n" for k, v in value.items())
 
                 metadata.append(line)
                 master_data.append(line_master)
@@ -339,10 +340,13 @@ def create_metadata(data, master):
         print(f"[ Done ] [ {games_count} games written ]")
 
     if master:
+        master_dir = BASE_PATH / 'master'
+        if master_dir.is_dir() is False:
+            Path.mkdir(master_dir)
         print(
-            "  . . > Creating ./metadata.txt... (e.g. master metadata.txt)",
+            "  . . > Creating ./master/metadata.txt... (e.g. master metadata.txt)",
             end="     ")
-        with open(BASE_PATH/'metadata.txt', 'w+', encoding='utf-8') as master_file:
+        with open(master_dir/'metadata.txt', 'w+', encoding='utf-8') as master_file:
             for line in master_data:
                 master_file.write(line)
         print("[ Done ]")
