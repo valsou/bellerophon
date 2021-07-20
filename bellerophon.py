@@ -320,7 +320,11 @@ def create_metadata(data, master):
                     line_master = f"{field}:{''.join(files_master)}\n"
 
                 if field == "description":
-                    line = line_master = f"{field}:\n{LONGTEXT_SANITIZED.fill(value)}\n"
+                    paragraphs = value.rstrip().splitlines()
+                    description = "\n".join([
+                        LONGTEXT_SANITIZED.fill(p) or LONGTEXT_SANITIZED.fill('.') for p in paragraphs if p
+                    ])
+                    line = line_master = f"{field}:\n{description}\n"
 
                 if field == "media":
                     line = "".join(f"assets.{k}: ./media/{k}/{v.name}\n" for k, v in value.items())
